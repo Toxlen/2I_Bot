@@ -1,4 +1,6 @@
 import os
+import typing
+from datetime import date
 
 from discord.ext import commands
 from dotenv import load_dotenv
@@ -15,8 +17,10 @@ async def ping(ctx):
     await ctx.send(response)
 
 @bot.command(name='add', help="Ajoute des devoirs dans la liste de devoirs")
-async def add(ctx,arg):
-    response = f"J'ajoute le devoir {arg}"
+async def add(ctx, jour: int, mois: int, annee: typing.Optional[int] = date.today().year):
+    date_devoir = date(annee, mois, jour)
+    date_devoir_str = date_devoir.strftime("%d/%m/%y")
+    response = f"J'ajoute le devoir {date_devoir_str}"
     await ctx.send(response)
 
 bot.run(TOKEN)

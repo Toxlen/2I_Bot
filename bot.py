@@ -7,14 +7,12 @@ from datetime import datetime
 
 from discord.ext import commands
 # from dotenv import load_dotenv
-from boto.s3.connection import S3Connection
-s3 = S3Connection(os.environ['S3_KEY'], os.environ['S3_SECRET'])
 
 from functions import *
 
 # load_dotenv()
-TOKEN = DISCORD_TOKEN # os.getenv('DISCORD_TOKEN')
-GUILD = DISCORD_GUILD # os.getenv('DISCORD_GUILD')
+TOKEN = os.environ['DISCORD_TOKEN'] # os.getenv('DISCORD_TOKEN')
+GUILD = os.environ['DISCORD_GUILD'] # os.getenv('DISCORD_GUILD')
 
 bot = commands.Bot(command_prefix='!')
 

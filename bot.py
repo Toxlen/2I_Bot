@@ -53,9 +53,9 @@ async def add_error(ctx, error):
 @bot.command(help="Permet d'afficher les devoirs à faire")
 async def devoirs(ctx, parameter: typing.Optional[str] = "-d", *, description: typing.Optional[str] = "" ):
     devoirs = ""
-    devoirsPrets = {"title": "", "color": 16711680, "fields": []}
     with open("devoirs.json", "r") as myfile:
         devoirs = json.load(myfile)
+    devoirsPrets = {"title": devoirs["title"], "color": 16711680, "fields": []}
 
     if parameter == "-m":
         if description != "":
@@ -77,7 +77,8 @@ async def devoirs(ctx, parameter: typing.Optional[str] = "-d", *, description: t
             for element in devoirs["fields"]:
                 date = datetime.fromisoformat(element["date"])
                 date_str = date.strftime("%d/%m/%Y")
-                devoirsPrets["fields"][i]["value"] = devoirs["fields"][i]["value"] + " pour le " + date_str
+                toAppend = {"name": devoirs["fields"][i]["name"], "value": devoirs["fields"][i]["value"] + " pour le " + date_str}
+                devoirsPrets["fields"].append(toAppend)
                 i += 1
             
     elif parameter == "-d":
@@ -85,7 +86,8 @@ async def devoirs(ctx, parameter: typing.Optional[str] = "-d", *, description: t
         for element in devoirs["fields"]:
             date = datetime.fromisoformat(element["date"])
             date_str = date.strftime("%d/%m/%Y")
-            devoirsPrets["fields"][i]["name"] = date_str + " : " + devoirs["fields"][i]["name"]
+            toAppend = {"name": date_str + " : " + element["name"], "value": element["value"]}
+            devoirsPrets["fields"].append(toAppend)
             i += 1
     else:
         raise commands.BadArgument
@@ -99,6 +101,30 @@ async def devoirs_error(ctx, error):
         await ctx.send("Tu as mal écris la commande !")
     else :
         await ctx.send("Ca n'a pas marché du à une erreur interne, veuillez contacter le dévellopeur ...")
+        print(error)
 
+@bot.event
+async def my_background_task(self):
+    await self.wait_until_ready()
+    aujourdhui = datetime.now().day
+    while not self.is_closed():
+        if aujourdhui != datetime.now().day:
+            aujourdhui = datetime.now().day
+
+            devoirsPrets = {"title": "", "color": 16711680, "fields": []}
+            devoirs = ""
+            with open("devoirs.json", "r") as myfile:
+                devoirs = json.load(myfile)
+
+            i = 0
+            for element in devoirs["fields"]:
+                date = datetime.fromisoformat(element["date"])
+                if date - 1 == aujourdhui:
+                    date_str = date.strftime("%d/%m/%Y")
+                    devoirsPrets["fields"][i]["name"] = date_str + " : " + devoirs["fields"][i]["name"]
+                i += 1
+
+            
+        await asyncio.sleep(60) # task runs every 60 seconds
 
 bot.run(TOKEN)

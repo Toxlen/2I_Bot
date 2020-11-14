@@ -51,7 +51,7 @@ async def add_error(ctx, error):
 
 # Afficher les devoirs à faire
 @bot.command(help="Permet d'afficher les devoirs à faire")
-async def devoirs(ctx, parameter: typing.Optional[str] = "-m", *, description: typing.Optional[str] = "" ):
+async def devoirs(ctx, parameter: typing.Optional[str] = "-d", *, description: typing.Optional[str] = "" ):
     devoirs = ""
     devoirsPrets = {"title": "", "color": 16711680, "fields": []}
     with open("devoirs.json", "r") as myfile:
@@ -68,7 +68,10 @@ async def devoirs(ctx, parameter: typing.Optional[str] = "-m", *, description: t
                     devoirsPrets["fields"].append(toAppend)
                     devoirsPrets["title"] = "Les devoirs en " + devoirs["fields"][i]["name"]
                 i += 1
-
+            
+            if devoirsPrets["fields"] == []:
+                devoirsPrets["title"] = "Les devoirs en " + description
+                devoirsPrets["description"] = "Pas de devoirs en cette matière ! YOUPI !!"
         else:
             i = 0
             for element in devoirs["fields"]:

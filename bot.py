@@ -53,18 +53,28 @@ async def add_error(ctx, error):
 @bot.command(help="Permet d'afficher les devoirs à faire")
 async def devoirs(ctx, parameter: typing.Optional[str] = "-m", *, description: typing.Optional[str] = "" ):
     devoirs = ""
+    devoirsPrets = {"title": "", "color": 16711680, "fields": []}
     with open("devoirs.json", "r") as myfile:
         devoirs = json.load(myfile)
 
     if parameter == "-m":
         if description != "":
-            pass
+            i = 0
+            for element in devoirs["fields"]:
+                if element["name"].lower() == description.lower():
+                    date = datetime.fromisoformat(element["date"])
+                    date_str = date.strftime("%d/%m/%Y")
+                    toAppend = {"name": devoirs["fields"][i]["name"], "value": devoirs["fields"][i]["value"] + " pour le " + date_str}
+                    devoirsPrets["fields"].append(toAppend)
+                    devoirsPrets["title"] = "Les devoirs en " + devoirs["fields"][i]["name"]
+                i += 1
+
         else:
             i = 0
             for element in devoirs["fields"]:
                 date = datetime.fromisoformat(element["date"])
                 date_str = date.strftime("%d/%m/%Y")
-                devoirs["fields"][i]["value"] += " pour le " + date_str
+                devoirsPrets["fields"][i]["value"] = devoirs["fields"][i]["value"] + " pour le " + date_str
                 i += 1
             
     elif parameter == "-d":
@@ -72,20 +82,20 @@ async def devoirs(ctx, parameter: typing.Optional[str] = "-m", *, description: t
         for element in devoirs["fields"]:
             date = datetime.fromisoformat(element["date"])
             date_str = date.strftime("%d/%m/%Y")
-            devoirs["fields"][i]["name"] = date_str + " : " + devoirs["fields"][i]["name"]
+            devoirsPrets["fields"][i]["name"] = date_str + " : " + devoirs["fields"][i]["name"]
             i += 1
     else:
         raise commands.BadArgument
         
-
-    miseEnForme = discord.Embed.from_dict(devoirs)
+    miseEnForme = discord.Embed.from_dict(devoirsPrets)
     await ctx.send(embed= miseEnForme)
 # Gestion des erreur de la commande devoirs
 @devoirs.error
 async def devoirs_error(ctx, error):
     if isinstance(error, commands.BadArgument) :
         await ctx.send("Tu as mal écris la commande !")
-
+    else :
+        await ctx.send("Ca n'a pas marché du à une erreur interne, veuillez contacter le dévellopeur ...")
 
 
 bot.run(TOKEN)

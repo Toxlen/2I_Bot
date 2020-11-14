@@ -36,9 +36,10 @@ async def add(ctx, date: str, matiere: str, *, description):
     with open("devoirs.json", "r") as myfile:
         devoirs = json.load(myfile)
 
+    toAppend = {"name" : matiere, "value" : description, "date" : date.isoformat()}
+    devoirs["fields"].append(toAppend)
+
     with open("devoirs.json", "w") as myfile:
-        toAppend = {"name" : matiere, "value" : description, "date" : date.isoformat()}
-        devoirs["fields"].append(toAppend)
         myfile.write(json.dumps(devoirs))
     
     date_str = date.strftime("%d/%m/%Y")
@@ -49,6 +50,38 @@ async def add(ctx, date: str, matiere: str, *, description):
 async def add_error(ctx, error):
     if isinstance(error, commands.ConversionError) :
         await ctx.send("Fait attention au format de la date !")
+    else :
+        await ctx.send("Ca n'a pas marché du à une erreur interne, veuillez contacter le dévellopeur ...")
+        print(error)
+
+# Supprimer un devoir du fichier .json par son indice
+@bot.command(help="Supprimer un devoir de la liste par son indice")
+async def rm(ctx, numero: int):
+
+    devoirs = ""
+
+    with open("devoirs.json", "r") as myfile:
+        devoirs = json.load(myfile)
+    
+    try:
+        del(devoirs["fields"][numero])
+    except IndexError:
+        raise commands.BadArgument
+
+    with open("devoirs.json", "w") as myfile:
+        myfile.write(json.dumps(devoirs))
+
+    response = f"Je supprime le devoir n°{numero} de la liste ! \nVous pouvez également voir la liste des devoirs en tapant !devoirs"
+    await ctx.send(response)
+# Gestion des erreur de la commande rm
+@rm.error
+async def rm_error(ctx, error):
+    if isinstance(error, commands.BadArgument) :
+        await ctx.send("Cette indice de devoir n'existe pas (ça commence à 0) !")
+    else :
+        await ctx.send("Ca n'a pas marché du à une erreur interne, veuillez contacter le dévellopeur ...")
+        print(error)
+    
 
 # Afficher les devoirs à faire
 @bot.command(help="Permet d'afficher les devoirs à faire")

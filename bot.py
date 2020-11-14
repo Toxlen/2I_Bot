@@ -5,6 +5,8 @@ from datetime import datetime
 from discord.ext import commands
 from dotenv import load_dotenv
 
+from functions import *
+
 load_dotenv()
 TOKEN = os.getenv('DISCORD_TOKEN')
 GUILD = os.getenv('DISCORD_GUILD')
@@ -17,36 +19,22 @@ async def ping(ctx):
     await ctx.send(response)
 
 @bot.command(name='add', help="Ajoute des devoirs dans la liste de devoirs")
-async def add(ctx, date: str):
-    if isFormat(date,"%d/%m/%y"):
-        date_devoir = datetime.strptime(date,"%d/%m/%y")
-    elif isFormat(date,"%d-%m-%y"):
-        date_devoir = datetime.strptime(date,"%d-%m-%y")
-    elif isFormat(date,"%d/%m"):
-        date_devoir = datetime.strptime(date,"%d/%m")
-        date_devoir = date_devoir.replace(year=datetime.now().year)
-    elif isFormat(date,"%d-%m"):
-        date_devoir = datetime.strptime(date,"%d-%m")
-        date_devoir = date_devoir.replace(year=datetime.now().year)
-    else :
-        raise commands.BadArgument
+async def add(ctx, date: str, matiere: str, *, description):
+    date = dateFormating(date)
 
-    date_devoir_str = date_devoir.strftime("%d/%m/%Y")
-    response = f"J'ajoute le devoir {date_devoir_str}"
+    if date == None:
+        raise commands.ConversionError
+
+    
+
+    date_str = date.strftime("%d/%m/%Y")
+    response = f"J'ajoute le devoir de {matiere} pour le {date_str} vous serez prevenue la veille ! \nVous pouvez également voir la liste des devoirs en tapant !devoirs"
     await ctx.send(response)
 
 @add.error
 async def add_error(ctx, error):
-    if isinstance(error, commands.BadArgument) :
+    if isinstance(error, commands.ConversionError) :
         await ctx.send("Fait attention au format de la date !")
-
-def isFormat(date, format):
-    try:
-        if date != datetime.strptime(date, format).strftime(format):
-            raise ValueError
-        return True
-    except ValueError:
-        return False
 
 
 bot.run(TOKEN)

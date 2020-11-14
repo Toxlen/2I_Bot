@@ -7,6 +7,8 @@ from datetime import datetime
 
 from discord.ext import commands
 # from dotenv import load_dotenv
+from boto.s3.connection import S3Connection
+s3 = S3Connection(os.environ['S3_KEY'], os.environ['S3_SECRET'])
 
 from functions import *
 

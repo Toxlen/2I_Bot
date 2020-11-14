@@ -1,2 +1,3 @@
 async-timeout==3.0.1
 discord.py==1.5.1
+python-apt===2.1.2pop0-1587756471-20.04-cd2988e

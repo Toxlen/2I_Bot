@@ -2,6 +2,7 @@ import os
 import json
 import discord
 import typing # C'est pour si on veut faire des argument non obligatoire
+import asyncio
 from datetime import datetime
 
 from discord.ext import commands
@@ -107,24 +108,30 @@ async def devoirs_error(ctx, error):
 async def my_background_task(self):
     await self.wait_until_ready()
     aujourdhui = datetime.now().day
+    guild = discord.utils.get(bot.guilds, name=GUILD)
+
     while not self.is_closed():
         if aujourdhui != datetime.now().day:
             aujourdhui = datetime.now().day
 
-            devoirsPrets = {"title": "", "color": 16711680, "fields": []}
             devoirs = ""
             with open("devoirs.json", "r") as myfile:
                 devoirs = json.load(myfile)
+            devoirsPrets = {"title": "Devoirs pour demain", "color": 16711680, "fields": []}
 
             i = 0
             for element in devoirs["fields"]:
                 date = datetime.fromisoformat(element["date"])
                 if date - 1 == aujourdhui:
                     date_str = date.strftime("%d/%m/%Y")
-                    devoirsPrets["fields"][i]["name"] = date_str + " : " + devoirs["fields"][i]["name"]
+                    toAppend = {"name": date_str + " : " + element["name"], "value": element["value"]}
+                    devoirsPrets["fields"].append(toAppend)
                 i += 1
-
             
+            miseEnForme = discord.Embed.from_dict(devoirsPrets)
+            await guild.send(embed= miseEnForme)
+
+        print("je me suis réveillé et je me rendors pour 1min")
         await asyncio.sleep(60) # task runs every 60 seconds
 
 bot.run(TOKEN)

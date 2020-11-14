@@ -9,7 +9,7 @@ GUILD = os.getenv('DISCORD_GUILD')
 
 bot = commands.Bot(command_prefix='!')
 
-@bot.command(name='ping')
+@bot.command(name='ping', help="Répond pong")
 async def ping(ctx):
     response = "pong"
     await ctx.send(response)

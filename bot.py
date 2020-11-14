@@ -24,10 +24,10 @@ async def add(ctx, date: str):
         date_devoir = datetime.strptime(date,"%d-%m-%y")
     elif isFormat(date,"%d/%m"):
         date_devoir = datetime.strptime(date,"%d/%m")
-        date_devoir.replace(year=datetime.now().year)
+        date_devoir = date_devoir.replace(year=datetime.now().year)
     elif isFormat(date,"%d-%m"):
         date_devoir = datetime.strptime(date,"%d-%m")
-        date_devoir.replace(year=datetime.now().year)
+        date_devoir = date_devoir.replace(year=datetime.now().year)
     else :
         raise commands.BadArgument
 

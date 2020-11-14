@@ -10,7 +10,7 @@ from discord.ext import commands
 
 from functions import *
 
-load_dotenv()
+# load_dotenv()
 TOKEN = DISCORD_TOKEN # os.getenv('DISCORD_TOKEN')
 GUILD = DISCORD_GUILD # os.getenv('DISCORD_GUILD')
 

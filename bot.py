@@ -109,6 +109,9 @@ async def my_background_task(self):
     await self.wait_until_ready()
     aujourdhui = datetime.now().day
     guild = discord.utils.get(bot.guilds, name=GUILD)
+    for channel in guild.channels:
+        if channel.name == "devoirs":
+            channelFinal = channel
 
     while not self.is_closed():
         if aujourdhui != datetime.now().day:
@@ -129,7 +132,7 @@ async def my_background_task(self):
                 i += 1
             
             miseEnForme = discord.Embed.from_dict(devoirsPrets)
-            await guild.send(embed= miseEnForme)
+            await channelFinal.send(embed= miseEnForme)
 
         print("je me suis réveillé et je me rendors pour 1min")
         await asyncio.sleep(60) # task runs every 60 seconds

@@ -15,5 +15,13 @@ class CustomClient(discord.Client):
             f'{guild.name}(id: {guild.id})'
         )
 
+    async def on_message(message):
+        if message.author == client.user:
+            return
+        
+        if message.content == 'ping':
+            response = "pong"
+            await message.channel.send(response)
+        
 client = CustomClient()
 client.run(TOKEN)

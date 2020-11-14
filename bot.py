@@ -14,4 +14,9 @@ async def ping(ctx):
     response = "pong"
     await ctx.send(response)
 
+@bot.command(name='add', help="Ajoute des devoirs dans la liste de devoirs")
+async def add(ctx,arg):
+    response = f"J'ajoute le devoir {arg}"
+    await ctx.send(response)
+
 bot.run(TOKEN)

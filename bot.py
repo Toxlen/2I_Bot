@@ -41,7 +41,7 @@ async def add(ctx, date: str, matiere: str, *, description):
         myfile.write(json.dumps(devoirs))
     
     date_str = date.strftime("%d/%m/%Y")
-    response = f"J'ajoute le devoir de {matiere} pour le {date_str} vous serez prevenue la veille ! \nVous pouvez également voir la liste des devoirs en tapant !devoirs"
+    response = f"J'ajoute le devoir de {matiere} pour le {date_str} vous serez prevenus la veille ! \nVous pouvez également voir la liste des devoirs en tapant !devoirs"
     await ctx.send(response)
 # Gestion des erreur de la commande add
 @add.error
@@ -49,7 +49,7 @@ async def add_error(ctx, error):
     if isinstance(error, commands.ConversionError) :
         await ctx.send("Fait attention au format de la date !")
     else :
-        await ctx.send("Ca n'a pas marché du à une erreur interne, veuillez contacter le dévellopeur ...")
+        await ctx.send("Ca n'a pas marché dû à une erreur interne, veuillez contacter le dévellopeur ...")
         print(error)
 
 # Supprimer un devoir du fichier .json par son indice

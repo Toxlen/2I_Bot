@@ -138,16 +138,15 @@ async def devoirs_error(ctx, error):
 @bot.event
 async def my_background_task(self):
     await self.wait_until_ready()
-    aujourdhui = datetime.now().day
+    aujourdhui = datetime.now()
     guild = discord.utils.get(bot.guilds, name=GUILD)
     for channel in guild.channels:
         if channel.name == "devoirs":
             channelFinal = channel
 
     while not self.is_closed():
-        if aujourdhui != datetime.now().day:
-            aujourdhui = datetime.now().day
-
+        aujourdhui = datetime.now()
+        if aujourdhui.hour == 11 and aujourdhui.minute == 0:
             devoirs = ""
             with open("devoirs.json", "r") as myfile:
                 devoirs = json.load(myfile)
@@ -156,14 +155,32 @@ async def my_background_task(self):
             i = 0
             for element in devoirs["fields"]:
                 date = datetime.fromisoformat(element["date"])
-                if date - 1 == aujourdhui:
+                if date.day - 1 == aujourdhui.day:
                     date_str = date.strftime("%d/%m/%Y")
                     toAppend = {"name": date_str + " : " + element["name"], "value": element["value"]}
                     devoirsPrets["fields"].append(toAppend)
                 i += 1
             
             miseEnForme = discord.Embed.from_dict(devoirsPrets)
-            await channelFinal.send(embed= miseEnForme)
+            await channelFinal.send("@everyone", embed= miseEnForme)
+        
+        if aujourdhui.hour == 7 and aujourdhui.minute == 0:
+            devoirs = ""
+            with open("devoirs.json", "r") as myfile:
+                devoirs = json.load(myfile)
+            devoirsPrets = {"title": "Devoirs pour aujourd'hui", "color": 16711680, "fields": []}
+
+            i = 0
+            for element in devoirs["fields"]:
+                date = datetime.fromisoformat(element["date"])
+                if date.day  == aujourdhui.day:
+                    date_str = date.strftime("%d/%m/%Y")
+                    toAppend = {"name": date_str + " : " + element["name"], "value": element["value"]}
+                    devoirsPrets["fields"].append(toAppend)
+                i += 1
+            
+            miseEnForme = discord.Embed.from_dict(devoirsPrets)
+            await channelFinal.send("@everyone", embed= miseEnForme)
 
         print("je me suis réveillé et je me rendors pour 1min")
         await asyncio.sleep(60) # task runs every 60 seconds

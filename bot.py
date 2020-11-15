@@ -6,13 +6,11 @@ import asyncio
 from datetime import datetime
 
 from discord.ext import commands
-# from dotenv import load_dotenv
 
 from functions import *
 
-# load_dotenv()
-TOKEN = os.environ['DISCORD_TOKEN'] # os.getenv('DISCORD_TOKEN')
-GUILD = os.environ['DISCORD_GUILD'] # os.getenv('DISCORD_GUILD')
+TOKEN = os.environ['DISCORD_TOKEN'] 
+GUILD = os.environ['DISCORD_GUILD'] 
 
 bot = commands.Bot(command_prefix='!')
 

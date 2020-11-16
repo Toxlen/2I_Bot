@@ -1,4 +1,5 @@
 from datetime import datetime
+import json
 
 def isFormat(date, format):
     try:
@@ -23,3 +24,11 @@ def dateFormating(date):
         return None
     
     return date
+
+def getDevoirs():
+    with open("devoirs.json", "r") as myfile:
+        return json.load(myfile)
+
+def setDevoirs(devoirs):
+    with open("devoirs.json", "w") as myfile:
+        myfile.write(json.dumps(devoirs))

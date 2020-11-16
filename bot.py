@@ -29,16 +29,12 @@ async def add(ctx, date: str, matiere: str, *, description):
     if date == None:
         raise commands.ConversionError
 
-    devoirs = ""
-
-    with open("devoirs.json", "r") as myfile:
-        devoirs = json.load(myfile)
+    devoirs = getDevoirs()
 
     toAppend = {"name" : matiere, "value" : description, "date" : date.isoformat()}
     devoirs["fields"].append(toAppend)
 
-    with open("devoirs.json", "w") as myfile:
-        myfile.write(json.dumps(devoirs))
+    setDevoirs(devoirs)
     
     date_str = date.strftime("%d/%m/%Y")
     response = f"J'ajoute le devoir de {matiere} pour le {date_str} vous serez prevenus la veille ! \nVous pouvez également voir la liste des devoirs en tapant !devoirs"
@@ -56,18 +52,14 @@ async def add_error(ctx, error):
 @bot.command(help="Supprimer un devoir de la liste par son indice")
 async def rm(ctx, numero: int):
 
-    devoirs = ""
-
-    with open("devoirs.json", "r") as myfile:
-        devoirs = json.load(myfile)
+    devoirs = setDevoirs()
     
     try:
         del(devoirs["fields"][numero])
     except IndexError:
         raise commands.BadArgument
 
-    with open("devoirs.json", "w") as myfile:
-        myfile.write(json.dumps(devoirs))
+    setDevoirs(devoirs)
 
     response = f"Je supprime le devoir n°{numero} de la liste ! \nVous pouvez également voir la liste des devoirs en tapant !devoirs"
     await ctx.send(response)
@@ -84,9 +76,7 @@ async def rm_error(ctx, error):
 # Afficher les devoirs à faire
 @bot.command(help="Permet d'afficher les devoirs à faire")
 async def devoirs(ctx, parameter: typing.Optional[str] = "-d", *, description: typing.Optional[str] = "" ):
-    devoirs = ""
-    with open("devoirs.json", "r") as myfile:
-        devoirs = json.load(myfile)
+    devoirs = getDevoirs()
     devoirsPrets = {"title": devoirs["title"], "color": 16711680, "fields": []}
 
     if parameter == "-m":
@@ -147,9 +137,7 @@ async def my_background_task(self):
     while not self.is_closed():
         aujourdhui = datetime.now()
         if aujourdhui.hour == 11 and aujourdhui.minute == 0:
-            devoirs = ""
-            with open("devoirs.json", "r") as myfile:
-                devoirs = json.load(myfile)
+            devoirs = getDevoirs()
             devoirsPrets = {"title": "Devoirs pour demain", "color": 16711680, "fields": []}
 
             i = 0
@@ -165,9 +153,7 @@ async def my_background_task(self):
             await channelFinal.send("@everyone", embed= miseEnForme)
         
         if aujourdhui.hour == 7 and aujourdhui.minute == 0:
-            devoirs = ""
-            with open("devoirs.json", "r") as myfile:
-                devoirs = json.load(myfile)
+            devoirs = getDevoirs()
             devoirsPrets = {"title": "Devoirs pour aujourd'hui", "color": 16711680, "fields": []}
 
             i = 0

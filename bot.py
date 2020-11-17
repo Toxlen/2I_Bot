@@ -52,7 +52,7 @@ async def add_error(ctx, error):
 @bot.command(help="Supprimer un devoir de la liste par son indice")
 async def rm(ctx, numero: int):
 
-    devoirs = setDevoirs()
+    devoirs = getDevoirs()
     
     try:
         del(devoirs["fields"][numero])

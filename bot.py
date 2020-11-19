@@ -6,6 +6,7 @@ import discord
 import typing # C'est pour si on veut faire des argument non obligatoire
 import asyncio
 from datetime import datetime
+import datetime as dt
 
 from discord.ext import commands
 
@@ -120,7 +121,7 @@ async def my_background_task():
         if aujourdhui.hour == 18 and aujourdhui.minute == 30:
             devoirsPrets = {}
 
-            aujourdhui = aujourdhui.replace(day=aujourdhui.day + 1)
+            aujourdhui = aujourdhui + dt.timedelta(days=1)
             devoirsPrets = devoirsParDate(laDate=aujourdhui)
             
             miseEnForme = discord.Embed.from_dict(devoirsPrets)
@@ -129,7 +130,7 @@ async def my_background_task():
         if aujourdhui.hour == 12 and aujourdhui.minute == 0:
             devoirsPrets = {}
 
-            aujourdhui = aujourdhui.replace(day=aujourdhui.day + 1)
+            aujourdhui = aujourdhui + dt.timedelta(days=1)
             devoirsPrets = devoirsParDate(laDate=aujourdhui)
             
             miseEnForme = discord.Embed.from_dict(devoirsPrets)

@@ -89,10 +89,10 @@ async def devoirs(ctx, parameter: typing.Optional[str] = "-d", *, description: t
                 devoirsPrets["title"] = "Les devoirs en " + description
                 devoirsPrets["description"] = "Pas de devoirs en cette matière ! YOUPI !!"
         else:
-            devoirsParMatiere()
+            devoirsPrets = devoirsParMatiere()
             
     elif parameter == "-d":
-        devoirsParDate()
+        devoirsPrets = devoirsParDate()
     else:
         raise commands.BadArgument
         

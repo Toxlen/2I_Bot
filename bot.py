@@ -175,4 +175,5 @@ async def my_background_task(self):
         print("je me suis réveillé et je me rendors pour 1min")
         await asyncio.sleep(60) # task runs every 60 seconds
 
+bot.loop.create_task(my_background_task())
 bot.run(TOKEN)

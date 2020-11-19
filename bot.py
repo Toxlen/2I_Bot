@@ -136,8 +136,6 @@ async def my_background_task():
         if channel.name == "devoirs":
             channelFinal = channel
 
-    print(f"Il est {aujourdhui.hour}:{aujourdhui.minute}")
-
     while not bot.is_closed():
         aujourdhui = datetime.now()
         if aujourdhui.hour == 12 and aujourdhui.minute == 0:
@@ -172,7 +170,6 @@ async def my_background_task():
             miseEnForme = discord.Embed.from_dict(devoirsPrets)
             await channelFinal.send("@everyone", embed= miseEnForme)
 
-        print("je me suis réveillé et je me rendors pour 1min")
         await asyncio.sleep(60) # task runs every 60 seconds
 
 bot.loop.create_task(my_background_task())

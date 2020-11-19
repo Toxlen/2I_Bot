@@ -20,7 +20,13 @@ bot = commands.Bot(command_prefix='!')
 @bot.command(name='ping', help="Répond pong")
 async def ping(ctx):
     response = "pong"
-    await ctx.send(response)
+
+    guild = discord.utils.get(bot.guilds, name=GUILD)
+    for channel in guild.channels:
+        if channel.name == "devoirs":
+            channelFinal = channel
+            
+    await channelFinal.send(response)
 
 # Ajouter les devoirs dans le .json des devoirs
 @bot.command(name='add', help="Ajoute des devoirs dans la liste de devoirs")

@@ -138,7 +138,7 @@ async def my_background_task(self):
 
     while not self.is_closed():
         aujourdhui = datetime.now()
-        if aujourdhui.hour == 11 and aujourdhui.minute == 0:
+        if aujourdhui.hour == 12 and aujourdhui.minute == 0:
             devoirs = getDevoirs()
             devoirsPrets = {"title": "Devoirs pour demain", "color": 16711680, "fields": []}
 
@@ -154,7 +154,7 @@ async def my_background_task(self):
             miseEnForme = discord.Embed.from_dict(devoirsPrets)
             await channelFinal.send("@everyone", embed= miseEnForme)
         
-        if aujourdhui.hour == 7 and aujourdhui.minute == 0:
+        if aujourdhui.hour == 8 and aujourdhui.minute == 0:
             devoirs = getDevoirs()
             devoirsPrets = {"title": "Devoirs pour aujourd'hui", "color": 16711680, "fields": []}
 

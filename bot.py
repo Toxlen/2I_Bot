@@ -128,8 +128,8 @@ async def devoirs_error(ctx, error):
         print(error)
 
 @bot.event
-async def my_background_task(self):
-    await self.wait_until_ready()
+async def my_background_task():
+    await bot.wait_until_ready()
     aujourdhui = datetime.now()
     guild = discord.utils.get(bot.guilds, name=GUILD)
     for channel in guild.channels:
@@ -138,7 +138,7 @@ async def my_background_task(self):
 
     print(f"Il est {aujourdhui.hour}:{aujourdhui.minute}")
 
-    while not self.is_closed():
+    while not bot.is_closed():
         aujourdhui = datetime.now()
         if aujourdhui.hour == 12 and aujourdhui.minute == 0:
             devoirs = getDevoirs()

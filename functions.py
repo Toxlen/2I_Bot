@@ -1,5 +1,5 @@
 from datetime import datetime
-import datetime
+import datetime as dt
 import json
 
 def isFormat(date, format):
@@ -47,13 +47,13 @@ def devoirsParMatiere(matiere = ""):
             i += 1
     return devoirsPrets
 
-def devoirsParDate(laDate = datetime.MINYEAR):
+def devoirsParDate(laDate = dt.MINYEAR):
     devoirs = getDevoirs()
     devoirsPrets = {"title": devoirs["title"], "color": 16711680, "fields": []}
     i = 0
     for element in devoirs["fields"]:
         date = datetime.fromisoformat(element["date"])
-        if date.day == laDate.day or laDate == datetime.MINYEAR:
+        if date.day == laDate.day or laDate == dt.MINYEAR:
             date_str = date.strftime("%d/%m/%Y")
             toAppend = {"name": date_str + " : " + element["name"], "value": element["value"]}
             devoirsPrets["fields"].append(toAppend)

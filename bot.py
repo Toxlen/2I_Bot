@@ -78,41 +78,20 @@ async def rm_error(ctx, error):
 # Afficher les devoirs à faire
 @bot.command(help="Permet d'afficher les devoirs à faire")
 async def devoirs(ctx, parameter: typing.Optional[str] = "-d", *, description: typing.Optional[str] = "" ):
-    devoirs = getDevoirs()
-    devoirsPrets = {"title": devoirs["title"], "color": 16711680, "fields": []}
+    devoirsPrets = {}
 
     if parameter == "-m":
         if description != "":
-            i = 0
-            for element in devoirs["fields"]:
-                if element["name"].lower() == description.lower():
-                    date = datetime.fromisoformat(element["date"])
-                    date_str = date.strftime("%d/%m/%Y")
-                    toAppend = {"name": devoirs["fields"][i]["name"], "value": devoirs["fields"][i]["value"] + " pour le " + date_str}
-                    devoirsPrets["fields"].append(toAppend)
-                    devoirsPrets["title"] = "Les devoirs en " + devoirs["fields"][i]["name"]
-                i += 1
+            devoirsPrets = devoirsParMatiere(matiere=description)
             
             if devoirsPrets["fields"] == []:
                 devoirsPrets["title"] = "Les devoirs en " + description
                 devoirsPrets["description"] = "Pas de devoirs en cette matière ! YOUPI !!"
         else:
-            i = 0
-            for element in devoirs["fields"]:
-                date = datetime.fromisoformat(element["date"])
-                date_str = date.strftime("%d/%m/%Y")
-                toAppend = {"name": devoirs["fields"][i]["name"], "value": devoirs["fields"][i]["value"] + " pour le " + date_str}
-                devoirsPrets["fields"].append(toAppend)
-                i += 1
+            devoirsParMatiere()
             
     elif parameter == "-d":
-        i = 0
-        for element in devoirs["fields"]:
-            date = datetime.fromisoformat(element["date"])
-            date_str = date.strftime("%d/%m/%Y")
-            toAppend = {"name": date_str + " : " + element["name"], "value": element["value"]}
-            devoirsPrets["fields"].append(toAppend)
-            i += 1
+        devoirsParDate()
     else:
         raise commands.BadArgument
         
@@ -138,34 +117,28 @@ async def my_background_task():
 
     while not bot.is_closed():
         aujourdhui = datetime.now()
-        if aujourdhui.hour == 12 and aujourdhui.minute == 0:
-            devoirs = getDevoirs()
-            devoirsPrets = {"title": "Devoirs pour demain", "color": 16711680, "fields": []}
+        if aujourdhui.hour == 18 and aujourdhui.minute == 30:
+            devoirsPrets = {}
 
-            i = 0
-            for element in devoirs["fields"]:
-                date = datetime.fromisoformat(element["date"])
-                if date.day - 1 == aujourdhui.day:
-                    date_str = date.strftime("%d/%m/%Y")
-                    toAppend = {"name": date_str + " : " + element["name"], "value": element["value"]}
-                    devoirsPrets["fields"].append(toAppend)
-                i += 1
+            aujourdhui = aujourdhui.replace(day=aujourdhui.day + 1)
+            devoirsPrets = devoirsParDate(laDate=aujourdhui)
+            
+            miseEnForme = discord.Embed.from_dict(devoirsPrets)
+            await channelFinal.send("@everyone", embed= miseEnForme)
+
+        if aujourdhui.hour == 12 and aujourdhui.minute == 0:
+            devoirsPrets = {}
+
+            aujourdhui = aujourdhui.replace(day=aujourdhui.day + 1)
+            devoirsPrets = devoirsParDate(laDate=aujourdhui)
             
             miseEnForme = discord.Embed.from_dict(devoirsPrets)
             await channelFinal.send("@everyone", embed= miseEnForme)
         
         if aujourdhui.hour == 8 and aujourdhui.minute == 0:
-            devoirs = getDevoirs()
-            devoirsPrets = {"title": "Devoirs pour aujourd'hui", "color": 16711680, "fields": []}
+            devoirsPrets = {}
 
-            i = 0
-            for element in devoirs["fields"]:
-                date = datetime.fromisoformat(element["date"])
-                if date.day  == aujourdhui.day:
-                    date_str = date.strftime("%d/%m/%Y")
-                    toAppend = {"name": date_str + " : " + element["name"], "value": element["value"]}
-                    devoirsPrets["fields"].append(toAppend)
-                i += 1
+            devoirsPrets = devoirsParDate(laDate=aujourdhui)
             
             miseEnForme = discord.Embed.from_dict(devoirsPrets)
             await channelFinal.send("@everyone", embed= miseEnForme)

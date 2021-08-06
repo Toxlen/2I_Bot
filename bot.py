@@ -9,11 +9,17 @@ from datetime import datetime
 import datetime as dt
 
 from discord.ext import commands
+from discord.ext.commands.errors import ChannelNotFound
 
 from functions import *
 
+from dotenv import load_dotenv
+
+load_dotenv()
+
 TOKEN = os.environ['DISCORD_TOKEN'] 
 GUILD = os.environ['DISCORD_GUILD'] 
+CHANNEL = int(os.environ['DISCORD_CHANNEL'])
 
 bot = commands.Bot(command_prefix='!')
 
@@ -21,7 +27,9 @@ bot = commands.Bot(command_prefix='!')
 @bot.command(name='ping', help="Répond pong")
 async def ping(ctx):
     response = "pong"
-    await ctx.send(response)
+    channel = bot.get_channel(CHANNEL)
+    print(channel)  
+    await channel.send(response)
 
 # Ajouter les devoirs dans le .json des devoirs
 @bot.command(name='add', help="Ajoute des devoirs dans la liste de devoirs")
@@ -111,29 +119,31 @@ async def devoirs_error(ctx, error):
 async def my_background_task():
     await bot.wait_until_ready()
     aujourdhui = datetime.now()
-    guild = discord.utils.get(bot.guilds, name=GUILD)
-    for channel in guild.channels:
-        if channel.name == "devoirs":
-            channelFinal = channel
+    # guild = discord.utils.get(bot.guilds, name=GUILD)
+    # for channel in guild.channels:
+    #     if channel.name == "devoirs":
+    #         channelFinal = channel
+    channelFinal = bot.get_channel(CHANNEL)
+    print(channelFinal, CHANNEL, sep="\n")
 
     while not bot.is_closed():
         aujourdhui = datetime.now()
         if aujourdhui.hour == 18 and aujourdhui.minute == 30:
             devoirsPrets = {}
 
-            if aujourdhui.weakday() < 4 or aujourdhui.weakday() == 6:
+            if aujourdhui.weekday() < 4 or aujourdhui.weekday() == 6:
                 aujourdhui = aujourdhui + dt.timedelta(days=1)
                 devoirsPrets["title"] = "Voilà les devoirs pour demain"
-            elif aujourdhui.weakday() == 4:
+            elif aujourdhui.weekday() == 4:
                 aujourdhui = aujourdhui + dt.timedelta(days=3)
                 devoirsPrets["title"] = "Voilà les devoirs pour lundi"
-            elif aujourdhui.weakday() == 5:
+            elif aujourdhui.weekday() == 5:
                 aujourdhui = aujourdhui + dt.timedelta(days=2)
                 devoirsPrets["title"] = "Voilà les devoirs pour lundi"
             devoirsPrets = devoirsParDate(laDate=aujourdhui)
 
             if devoirsPrets["fields"] == []:
-                if aujourdhui.weakday() == 0:
+                if aujourdhui.weekday() == 0:
                     devoirsPrets["description"] = "Pas de devoirs pour lundi ! YOUPI !!"
                 else :
                     devoirsPrets["description"] = "Pas de devoirs pour demain ! YOUPI !!"
@@ -144,19 +154,19 @@ async def my_background_task():
         if aujourdhui.hour == 12 and aujourdhui.minute == 0:
             devoirsPrets = {}
 
-            if aujourdhui.weakday() < 4 or aujourdhui.weakday() == 6:
+            if aujourdhui.weekday() < 4 or aujourdhui.weekday() == 6:
                 aujourdhui = aujourdhui + dt.timedelta(days=1)
                 devoirsPrets["title"] = "Voilà les devoirs pour demain"
-            elif aujourdhui.weakday() == 4:
+            elif aujourdhui.weekday() == 4:
                 aujourdhui = aujourdhui + dt.timedelta(days=3)
                 devoirsPrets["title"] = "Voilà les devoirs pour lundi"
-            elif aujourdhui.weakday() == 5:
+            elif aujourdhui.weekday() == 5:
                 aujourdhui = aujourdhui + dt.timedelta(days=2)
                 devoirsPrets["title"] = "Voilà les devoirs pour lundi"
             devoirsPrets = devoirsParDate(laDate=aujourdhui)
 
             if devoirsPrets["fields"] == []:
-                if aujourdhui.weakday() == 0:
+                if aujourdhui.weekday() == 0:
                     devoirsPrets["description"] = "Pas de devoirs pour lundi ! YOUPI !!"
                 else :
                     devoirsPrets["description"] = "Pas de devoirs pour demain ! YOUPI !!"
@@ -164,11 +174,15 @@ async def my_background_task():
             miseEnForme = discord.Embed.from_dict(devoirsPrets)
             await channelFinal.send("@everyone", embed= miseEnForme)
         
-        if aujourdhui.hour == 8 and aujourdhui.minute == 0:
+        if aujourdhui.hour == 8 and aujourdhui.minute == 0 and aujourdhui.weekday() <= 5:
             devoirsPrets = {}
 
             devoirsPrets = devoirsParDate(laDate=aujourdhui)
-            devoirsPrets["title"] = "Voilà les devoirs pour aujourd'hui"
+            if devoirsPrets["fields"] == []:
+                devoirsPrets["title"] = "Pas de devoirs pour aujourd'hui"
+                devoirsPrets["description"] = "Du moins pas encore !"
+            else:
+                devoirsPrets["title"] = "Voilà les devoirs pour aujourd'hui"
             
             miseEnForme = discord.Embed.from_dict(devoirsPrets)
             await channelFinal.send("@everyone", embed= miseEnForme)

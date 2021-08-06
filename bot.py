@@ -27,9 +27,7 @@ bot = commands.Bot(command_prefix='!')
 @bot.command(name='ping', help="Répond pong")
 async def ping(ctx):
     response = "pong"
-    channel = bot.get_channel(CHANNEL)
-    print(channel)  
-    await channel.send(response)
+    await ctx.send(response)
 
 # Ajouter les devoirs dans le .json des devoirs
 @bot.command(name='add', help="Ajoute des devoirs dans la liste de devoirs")
@@ -124,7 +122,6 @@ async def my_background_task():
     #     if channel.name == "devoirs":
     #         channelFinal = channel
     channelFinal = bot.get_channel(CHANNEL)
-    print(channelFinal, CHANNEL, sep="\n")
 
     while not bot.is_closed():
         aujourdhui = datetime.now()

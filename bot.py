@@ -30,7 +30,7 @@ async def ping(ctx):
     await ctx.send(response)
 
 # Ajouter les devoirs dans le .json des devoirs
-@bot.command(name='add', help="Ajoute des devoirs dans la liste de devoirs")
+@bot.command(name='add', help="Ajoute des devoirs dans la liste de devoirs préciser la date, la matière (en un mot) puis une description")
 async def add(ctx, date: str, matiere: str, *, description):
     
     date = dateFormating(date)
@@ -58,7 +58,7 @@ async def add_error(ctx, error):
         print(error)
 
 # Supprimer un devoir du fichier .json par son indice
-@bot.command(help="Supprimer un devoir de la liste par son indice")
+@bot.command(help="Supprimer un devoir de la liste par son indice (commence à 0, en négatif part de la fin, on est des devs ou pas)")
 async def rm(ctx, numero: int):
 
     devoirs = getDevoirs()

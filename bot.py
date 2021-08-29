@@ -36,7 +36,7 @@ async def add(ctx, date: str, matiere: str, *, description):
     date = dateFormating(date)
 
     if date == None:
-        raise commands.ConversionError
+        raise commands.CommandError()
 
     devoirs = getDevoirs()
 
@@ -51,7 +51,7 @@ async def add(ctx, date: str, matiere: str, *, description):
 # Gestion des erreur de la commande add
 @add.error
 async def add_error(ctx, error):
-    if isinstance(error, commands.ConversionError) :
+    if isinstance(error, commands.CommandError) :
         await ctx.send("Fait attention au format de la date !")
     else :
         await ctx.send("Ca n'a pas marché dû à une erreur interne, veuillez contacter le dévellopeur ...")

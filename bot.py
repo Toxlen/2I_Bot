@@ -7,6 +7,7 @@ import typing # C'est pour si on veut faire des argument non obligatoire
 import asyncio
 from datetime import datetime
 import datetime as dt
+from random import random, choice
 
 from discord.ext import commands
 from discord.ext.commands.errors import ChannelNotFound
@@ -60,6 +61,7 @@ async def add_error(ctx, error):
 # Supprimer un devoir du fichier .json par son indice
 @bot.command(help="Supprimer un devoir de la liste par son indice (commence à 0, en négatif part de la fin, on est des devs ou pas)")
 async def rm(ctx, numero: int):
+
 
     devoirs = getDevoirs()
     
@@ -125,7 +127,7 @@ async def my_background_task():
 
     while not bot.is_closed():
         aujourdhui = datetime.now()
-        if aujourdhui.hour == 18 and aujourdhui.minute == 30:
+        if (aujourdhui.hour == 18 and aujourdhui.minute == 30) or (aujourdhui.hour == 12 and aujourdhui.minute == 0 and aujourdhui.weekday() <= 4):
             devoirsPrets = {}
 
             if aujourdhui.weekday() < 4 or aujourdhui.weekday() == 6:
@@ -146,43 +148,29 @@ async def my_background_task():
                     devoirsPrets["description"] = "Pas de devoirs pour demain ! YOUPI !!"
             
             miseEnForme = discord.Embed.from_dict(devoirsPrets)
-            await channelFinal.send("@everyone", embed= miseEnForme)
-
-        if aujourdhui.hour == 12 and aujourdhui.minute == 0:
-            devoirsPrets = {}
-
-            if aujourdhui.weekday() < 4 or aujourdhui.weekday() == 6:
-                aujourdhui = aujourdhui + dt.timedelta(days=1)
-                devoirsPrets["title"] = "Voilà les devoirs pour demain"
-            elif aujourdhui.weekday() == 4:
-                aujourdhui = aujourdhui + dt.timedelta(days=3)
-                devoirsPrets["title"] = "Voilà les devoirs pour lundi"
-            elif aujourdhui.weekday() == 5:
-                aujourdhui = aujourdhui + dt.timedelta(days=2)
-                devoirsPrets["title"] = "Voilà les devoirs pour lundi"
-            devoirsPrets = devoirsParDate(laDate=aujourdhui)
-
-            if devoirsPrets["fields"] == []:
-                if aujourdhui.weekday() == 0:
-                    devoirsPrets["description"] = "Pas de devoirs pour lundi ! YOUPI !!"
-                else :
-                    devoirsPrets["description"] = "Pas de devoirs pour demain ! YOUPI !!"
-            
-            miseEnForme = discord.Embed.from_dict(devoirsPrets)
-            await channelFinal.send("@everyone", embed= miseEnForme)
-        
-        if aujourdhui.hour == 8 and aujourdhui.minute == 0 and aujourdhui.weekday() <= 5:
-            devoirsPrets = {}
-
-            devoirsPrets = devoirsParDate(laDate=aujourdhui)
-            if devoirsPrets["fields"] == []:
-                devoirsPrets["title"] = "Pas de devoirs pour aujourd'hui"
-                devoirsPrets["description"] = "Du moins pas encore !"
+            if random() < 0.001:
+                await channelFinal.send("@everyone", embed= miseEnForme)
             else:
-                devoirsPrets["title"] = "Voilà les devoirs pour aujourd'hui"
+                await channelFinal.send("@tout_le_monde", embed= miseEnForme)
+        
+        elif aujourdhui.hour == 8 and aujourdhui.minute == 0 and aujourdhui.weekday() <= 5:
+            devoirsPrets = {}
+            devoirsPrets["title"] = "Voilà les devoirs pour aujourd'hui"
+
+            devoirsPrets = devoirsParDate(laDate=aujourdhui)
+            if devoirsPrets["fields"] == []:
+                devoirsPrets["description"] = "Pas de devoirs pour aujourd'hui ! Du moins pas encore :"
             
             miseEnForme = discord.Embed.from_dict(devoirsPrets)
-            await channelFinal.send("@everyone", embed= miseEnForme)
+            if random() < 0.001:
+                await channelFinal.send("@everyone", embed= miseEnForme)
+            else:
+                await channelFinal.send("@tout_le_monde", embed= miseEnForme)
+
+        else:
+            if random() < 0.00005:
+                randomEmoji = [":kissing_heart:", ":flushed:", ":wink:", ":smirk:", ":rolling_eyes:", ":hot_face:", ":yawning_face:", ":face_vomiting:", ":mechanic_tone4:", ":pinching_hand:", ":person_gesturing_no:", ":kiss_mm:", ":couple_mm:", ":frog:", ":full_moon_with_face:", ":sweat_drops:", ":peach:", ":eggplant:", ":brown_square:", ":flag_af:"]
+                channelFinal.send(choice(randomEmoji))
 
         await asyncio.sleep(60) # task runs every 60 seconds
 

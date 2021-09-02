@@ -141,31 +141,24 @@ async def my_background_task():
                 devoirsPrets["title"] = "Voilà les devoirs pour lundi"
             devoirsPrets = devoirsParDate(laDate=aujourdhui)
 
-            if devoirsPrets["fields"] == []:
-                if aujourdhui.weekday() == 0:
-                    devoirsPrets["description"] = "Pas de devoirs pour lundi ! YOUPI !!"
-                else :
-                    devoirsPrets["description"] = "Pas de devoirs pour demain ! YOUPI !!"
-            
-            miseEnForme = discord.Embed.from_dict(devoirsPrets)
-            if random() < 0.001:
-                await channelFinal.send("@everyone", embed= miseEnForme)
-            else:
-                await channelFinal.send("@tout_le_monde", embed= miseEnForme)
+            if devoirsPrets["fields"] != []:
+                miseEnForme = discord.Embed.from_dict(devoirsPrets)
+                if random() < 0.001:
+                    await channelFinal.send("@everyone", embed= miseEnForme)
+                else:
+                    await channelFinal.send("@tout_le_monde", embed= miseEnForme)
         
         elif aujourdhui.hour == 8 and aujourdhui.minute == 0 and aujourdhui.weekday() <= 5:
             devoirsPrets = {}
             devoirsPrets["title"] = "Voilà les devoirs pour aujourd'hui"
 
             devoirsPrets = devoirsParDate(laDate=aujourdhui)
-            if devoirsPrets["fields"] == []:
-                devoirsPrets["description"] = "Pas de devoirs pour aujourd'hui ! Du moins pas encore :"
-            
-            miseEnForme = discord.Embed.from_dict(devoirsPrets)
-            if random() < 0.001:
-                await channelFinal.send("@everyone", embed= miseEnForme)
-            else:
-                await channelFinal.send("@tout_le_monde", embed= miseEnForme)
+            if devoirsPrets["fields"] != []:
+                miseEnForme = discord.Embed.from_dict(devoirsPrets)
+                if random() < 0.001:
+                    await channelFinal.send("@everyone", embed= miseEnForme)
+                else:
+                    await channelFinal.send("@tout_le_monde", embed= miseEnForme)
 
         else:
             if random() < 0.00005:

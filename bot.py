@@ -30,14 +30,18 @@ async def ping(ctx):
     response = "pong"
     await ctx.send(response)
 
+async def bannedList(ctx):
+    return ctx.author.id != 320666678021193728
+
 # Ajouter les devoirs dans le .json des devoirs
 @bot.command(name='add', help="Ajoute des devoirs dans la liste de devoirs préciser la date, la matière (en un mot) puis une description")
+@commands.check(bannedList)
 async def add(ctx, date: str, matiere: str, *, description):
     
     date = dateFormating(date)
 
     if date == None:
-        raise commands.CommandError()
+        raise commands.BadArgument
 
     devoirs = getDevoirs()
 
@@ -52,8 +56,10 @@ async def add(ctx, date: str, matiere: str, *, description):
 # Gestion des erreur de la commande add
 @add.error
 async def add_error(ctx, error):
-    if isinstance(error, commands.CommandError) :
+    if isinstance(error, commands.BadArgument) :
         await ctx.send("Fait attention au format de la date !")
+    if isinstance(error, commands.CommandError) :
+        await ctx.send("https://tenor.com/view/lotr-ring-no-isildur-lord-of-the-rings-gif-5743603")
     else :
         await ctx.send("Ca n'a pas marché dû à une erreur interne, veuillez contacter le dévellopeur ...")
         print(error)

@@ -133,18 +133,19 @@ async def my_background_task():
 
     while not bot.is_closed():
         aujourdhui = datetime.now()
-
-        devoirs = getDevoirs()
-        modif = False
-        cpt = 0
-        for devoir in devoirs["fields"]:
-            if datetime.fromisoformat(devoir["date"]) < aujourdhui:
-                del(devoirs["fields"][cpt])
-                modif = True
-            cpt += 1
         
-        if modif:
-            setDevoirs(devoirs)
+        if (aujourdhui.hour == 0 and aujourdhui.minute == 1):
+            devoirs = getDevoirs()
+            modif = False
+            cpt = 0
+            for devoir in devoirs["fields"]:
+                if datetime.fromisoformat(devoir["date"]) < aujourdhui:
+                    del(devoirs["fields"][cpt])
+                    modif = True
+                cpt += 1
+            
+            if modif:
+                setDevoirs(devoirs)
 
         if (aujourdhui.hour == 18 and aujourdhui.minute == 30) or (aujourdhui.hour == 12 and aujourdhui.minute == 0 and aujourdhui.weekday() <= 4):
             devoirsPrets = {}

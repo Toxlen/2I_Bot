@@ -133,6 +133,19 @@ async def my_background_task():
 
     while not bot.is_closed():
         aujourdhui = datetime.now()
+
+        devoirs = getDevoirs()
+        modif = False
+        cpt = 0
+        for devoir in devoirs["fields"]:
+            if datetime.fromisoformat(devoir["date"]) < aujourdhui:
+                del(devoirs["fields"][cpt])
+                modif = True
+            cpt += 1
+        
+        if modif:
+            setDevoirs(devoirs)
+
         if (aujourdhui.hour == 18 and aujourdhui.minute == 30) or (aujourdhui.hour == 12 and aujourdhui.minute == 0 and aujourdhui.weekday() <= 4):
             devoirsPrets = {}
 
@@ -169,7 +182,7 @@ async def my_background_task():
         else:
             if random() < 0.00005:
                 randomEmoji = [":kissing_heart:", ":flushed:", ":wink:", ":smirk:", ":rolling_eyes:", ":hot_face:", ":yawning_face:", ":face_vomiting:", ":mechanic_tone4:", ":pinching_hand:", ":person_gesturing_no:", ":kiss_mm:", ":couple_mm:", ":frog:", ":full_moon_with_face:", ":sweat_drops:", ":peach:", ":eggplant:", ":brown_square:", ":flag_af:"]
-                channelFinal.send(choice(randomEmoji))
+                await channelFinal.send(choice(randomEmoji))
 
         await asyncio.sleep(60) # task runs every 60 seconds
 

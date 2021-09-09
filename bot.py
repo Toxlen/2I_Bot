@@ -24,18 +24,24 @@ CHANNEL = int(os.environ['DISCORD_CHANNEL'])
 
 bot = commands.Bot(command_prefix='!')
 
+tgGifs = ["https://tenor.com/view/lotr-ring-no-isildur-lord-of-the-rings-gif-5743603", "https://tenor.com/view/no-bugs-bunny-nope-gif-14359850", "https://tenor.com/view/cdi-super-mario-no-turn-around-gif-13643447", "https://tenor.com/view/ohhh-whoah-gif-14206432", "https://tenor.com/view/antm-americas-next-top-model-miss-j-j-alexander-omg-gif-3720930", "https://tenor.com/view/anime-punch-fight-slam-wall-gif-5012110", "https://tenor.com/view/cheh-sheh-orge-sumerien-gif-20238938", "https://tenor.com/view/cat-cats-cat-reaction-cat-react-cat-what-gif-17596807", "https://tenor.com/view/umm-confused-blinking-okay-white-guy-blinking-gif-7513882", "https://tenor.com/view/pedro-monkey-puppet-meme-awkward-gif-15268759", "https://tenor.com/view/vieux-old-man-gif-20005208", "https://tenor.com/view/ferme-ta-gueule-ta-gueule-ferme-la-ftg-tg-gif-5034362", "https://tenor.com/view/my-hero-acadamia-deku-excited-head-desk-wiggling-gif-5497470"]
+
+@bot.check
+async def bannedList(ctx):
+    for role in ctx.author.roles:
+        if role.id == 885425513865306112:
+            return False
+    return True
+
 # Test du ping pong
 @bot.command(name='ping', help="Répond pong")
 async def ping(ctx):
     response = "pong"
     await ctx.send(response)
 
-async def bannedList(ctx):
-    return ctx.author.id != 320666678021193728
 
 # Ajouter les devoirs dans le .json des devoirs
 @bot.command(name='add', help="Ajoute des devoirs dans la liste de devoirs préciser la date, la matière (en un mot) puis une description")
-@commands.check(bannedList)
 async def add(ctx, date: str, matiere: str, *, description):
     
     date = dateFormating(date)
@@ -59,7 +65,7 @@ async def add_error(ctx, error):
     if isinstance(error, commands.BadArgument) :
         await ctx.send("Fait attention au format de la date !")
     if isinstance(error, commands.CommandError) :
-        await ctx.send("https://tenor.com/view/lotr-ring-no-isildur-lord-of-the-rings-gif-5743603")
+        await ctx.send(choice(tgGifs))
     else :
         await ctx.send("Ca n'a pas marché dû à une erreur interne, veuillez contacter le dévellopeur ...")
         print(error)
@@ -85,6 +91,8 @@ async def rm(ctx, numero: int):
 async def rm_error(ctx, error):
     if isinstance(error, commands.BadArgument) :
         await ctx.send("Cette indice de devoir n'existe pas (ça commence à 0) !")
+    if isinstance(error, commands.CommandError) :
+        await ctx.send(choice(tgGifs))
     else :
         await ctx.send("Ca n'a pas marché du à une erreur interne, veuillez contacter le dévellopeur ...")
         print(error)
@@ -117,6 +125,8 @@ async def devoirs(ctx, parameter: typing.Optional[str] = "-d", *, description: t
 async def devoirs_error(ctx, error):
     if isinstance(error, commands.BadArgument) :
         await ctx.send("Tu as mal écris la commande !")
+    if isinstance(error, commands.CommandError) :
+        await ctx.send(choice(tgGifs))
     else :
         await ctx.send("Ca n'a pas marché du à une erreur interne, veuillez contacter le dévellopeur ...")
         print(error)

@@ -31,6 +31,7 @@ def getDevoirs():
         return json.load(myfile)
 
 def setDevoirs(devoirs):
+    devoirs["fields"].sort(key=lambda item: item.get("date"))
     with open("devoirs.json", "w") as myfile:
         myfile.write(json.dumps(devoirs))
 

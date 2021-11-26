@@ -68,7 +68,7 @@ async def add_error(ctx, error):
         await ctx.send(choice(tgGifs))
     else :
         await ctx.send("Ca n'a pas marché dû à une erreur interne, veuillez contacter le dévellopeur ...")
-        print(error)
+    print(error)
 
 # Supprimer un devoir du fichier .json par son indice
 @bot.command(help="Supprimer un devoir de la liste par son indice (commence à 0, en négatif part de la fin, on est des devs ou pas)")

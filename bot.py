@@ -67,7 +67,7 @@ async def add_error(ctx, error):
     if isinstance(error, commands.CommandError) :
         await ctx.send(choice(tgGifs))
     else :
-        await ctx.send("Ca n'a pas marché dû à une erreur interne, veuillez contacter le dévellopeur ...")
+        await ctx.send("Ca n'a pas marché dû à une erreur interne, veuillez contacter le développeur ...")
     print(error)
 
 # Supprimer un devoir du fichier .json par son indice
@@ -94,7 +94,7 @@ async def rm_error(ctx, error):
     if isinstance(error, commands.CommandError) :
         await ctx.send(choice(tgGifs))
     else :
-        await ctx.send("Ca n'a pas marché du à une erreur interne, veuillez contacter le dévellopeur ...")
+        await ctx.send("Ca n'a pas marché du à une erreur interne, veuillez contacter le développeur ...")
         print(error)
     
 
@@ -128,7 +128,7 @@ async def devoirs_error(ctx, error):
     if isinstance(error, commands.CommandError) :
         await ctx.send(choice(tgGifs))
     else :
-        await ctx.send("Ca n'a pas marché du à une erreur interne, veuillez contacter le dévellopeur ...")
+        await ctx.send("Ca n'a pas marché du à une erreur interne, veuillez contacter le développeur ...")
         print(error)
 
 @bot.event

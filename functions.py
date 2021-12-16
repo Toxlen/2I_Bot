@@ -23,6 +23,9 @@ def dateFormating(date):
         date = date.replace(year=datetime.now().year)
     else :
         return None
+
+    if ((date.month < datetime.now().month) or (date.month == datetime.now().month and date.day < datetime.now().day)) and date.year <= datetime.now().year:
+        date = date.replace(year=datetime.now().year + 1)
     
     return date
 

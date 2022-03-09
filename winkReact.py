@@ -17,8 +17,11 @@ async def on_ready():
 async def on_message(message):
     if message.author == client.user:
         return
-    emoji = '\N{WINKING FACE}'
-    await message.add_reaction(emoji)
+    
+    if message.author.id == 426027258092978176:
+        emoji = '\N{WINKING FACE}'
+        await message.add_reaction(emoji)
+        return
 
 
 client.run(TOKEN)

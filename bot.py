@@ -1,7 +1,6 @@
 #!/usr/bin/python3
 
 import os
-import json
 import discord
 import typing # C'est pour si on veut faire des argument non obligatoire
 import asyncio
@@ -10,7 +9,6 @@ import datetime as dt
 from random import random, choice
 
 from discord.ext import commands
-from discord.ext.commands.errors import ChannelNotFound
 
 from functions import *
 
@@ -129,7 +127,7 @@ async def devoirs_error(ctx, error):
         await ctx.send(choice(tgGifs))
     else :
         await ctx.send("Ca n'a pas marché du à une erreur interne, veuillez contacter le développeur ...")
-        print(error)
+        print(datetime.datetime.now().time(), error)
 
 @bot.event
 async def my_background_task():

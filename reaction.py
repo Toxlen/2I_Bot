@@ -1,9 +1,7 @@
-from ast import Try
-from distutils.log import error
 import os
-from unittest import expectedFailure
 import discord
 from emoji import EMOJI_DATA
+import datetime
 
 from dotenv import load_dotenv
 
@@ -32,10 +30,11 @@ async def on_message(message):
 
     for car in message.content:
         if car in EMOJI_DATA:
+
             try:
                 await message.add_reaction(car)
             except Exception as e:
-                print(e.text)
+                print(datetime.datetime.now().time(), e.text)
                 return
 
     for word in splited:

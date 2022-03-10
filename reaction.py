@@ -9,8 +9,8 @@ load_dotenv()
 
 TOKEN = os.environ['DISCORD_TOKEN'] 
 
-client = discord.Client()
 spamJuliette = True
+client = discord.Client()
 
 @client.event
 async def on_ready():

@@ -41,4 +41,9 @@ async def on_message(message):
         if word.startswith("<") and word.endswith(">") and word.find(":") != -1:
             await message.add_reaction(word)
 
+@client.event
+async def on_reaction_add(reaction, user):
+    if "\N{WINKING FACE}" in reaction.emoji and reaction.message.author.id == 426027258092978176:
+        spamJuliette = not spamJuliette
+
 client.run(TOKEN)

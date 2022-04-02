@@ -54,12 +54,11 @@ def devoirsParMatiere(matiere = ""):
 def devoirsParDate(laDate = datetime(dt.MINYEAR,1,1)):
     devoirs = getDevoirs()
     devoirsPrets = {"title": devoirs["title"], "color": 16711680, "fields": []}
-    i = 0
+    
     for element in devoirs["fields"]:
         date = datetime.fromisoformat(element["date"])
         if (date.day == laDate.day and date.year != dt.MINYEAR) or laDate.year == dt.MINYEAR:
             date_str = date.strftime("%d/%m/%Y")
             toAppend = {"name": date_str + " : " + element["name"], "value": element["value"]}
             devoirsPrets["fields"].append(toAppend)
-        i += 1
     return devoirsPrets

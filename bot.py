@@ -24,6 +24,10 @@ bot = commands.Bot(command_prefix='!')
 
 tgGifs = ["https://tenor.com/view/lotr-ring-no-isildur-lord-of-the-rings-gif-5743603", "https://tenor.com/view/no-bugs-bunny-nope-gif-14359850", "https://tenor.com/view/cdi-super-mario-no-turn-around-gif-13643447", "https://tenor.com/view/ohhh-whoah-gif-14206432", "https://tenor.com/view/antm-americas-next-top-model-miss-j-j-alexander-omg-gif-3720930", "https://tenor.com/view/anime-punch-fight-slam-wall-gif-5012110", "https://tenor.com/view/cheh-sheh-orge-sumerien-gif-20238938", "https://tenor.com/view/cat-cats-cat-reaction-cat-react-cat-what-gif-17596807", "https://tenor.com/view/umm-confused-blinking-okay-white-guy-blinking-gif-7513882", "https://tenor.com/view/pedro-monkey-puppet-meme-awkward-gif-15268759", "https://tenor.com/view/vieux-old-man-gif-20005208", "https://tenor.com/view/ferme-ta-gueule-ta-gueule-ferme-la-ftg-tg-gif-5034362", "https://tenor.com/view/my-hero-acadamia-deku-excited-head-desk-wiggling-gif-5497470"]
 
+alerteSemainePro = ["4:18:30", "5:12:0", "6:18:30"]
+alerteDemain = ["0:18:30", "1:18:30", "2:18:30", "3:18:30"]
+alerteAujourdhui = ["0:8:0", "1:8:0", "2:8:0", "3:8:0", "4:8:0", "5:8:0"]
+
 @bot.check
 async def bannedList(ctx):
     for role in ctx.author.roles:
@@ -38,6 +42,7 @@ async def ping(ctx):
     await ctx.send(response)
 
 
+# ========================================================
 # Ajouter les devoirs dans le .json des devoirs
 @bot.command(name='add', help="Ajoute des devoirs dans la liste de devoirs préciser la date, la matière (en un mot) puis une description")
 async def add(ctx, date: str, matiere: str, *, description):
@@ -68,6 +73,7 @@ async def add_error(ctx, error):
         await ctx.send("Ca n'a pas marché dû à une erreur interne, veuillez contacter le développeur ...")
     print(error)
 
+# ========================================================
 # Supprimer un devoir du fichier .json par son indice
 @bot.command(help="Supprimer un devoir de la liste par son indice (commence à 0, en négatif part de la fin, on est des devs ou pas)")
 async def rm(ctx, numero: int):
@@ -95,7 +101,7 @@ async def rm_error(ctx, error):
         await ctx.send("Ca n'a pas marché du à une erreur interne, veuillez contacter le développeur ...")
         print(error)
     
-
+# ========================================================
 # Afficher les devoirs à faire
 @bot.command(help="Permet d'afficher les devoirs à faire")
 async def devoirs(ctx, parameter: typing.Optional[str] = "-d", *, description: typing.Optional[str] = "" ):
@@ -129,10 +135,11 @@ async def devoirs_error(ctx, error):
         await ctx.send("Ca n'a pas marché du à une erreur interne, veuillez contacter le développeur ...")
         print(datetime.datetime.now().time(), error)
 
+# ========================================================
+# Tache de vérification régulière
 @bot.event
 async def my_background_task():
     await bot.wait_until_ready()
-    aujourdhui = datetime.now()
     # guild = discord.utils.get(bot.guilds, name=GUILD)
     # for channel in guild.channels:
     #     if channel.name == "devoirs":
@@ -142,6 +149,7 @@ async def my_background_task():
     while not bot.is_closed():
         aujourdhui = datetime.now()
         
+        # Suppression des devoirs passés
         if (aujourdhui.hour == 0 and aujourdhui.minute == 1):
             devoirs = getDevoirs()
             modif = False
@@ -155,32 +163,44 @@ async def my_background_task():
             if modif:
                 setDevoirs(devoirs)
 
-        if (aujourdhui.hour == 18 and aujourdhui.minute == 30) or (aujourdhui.hour == 12 and aujourdhui.minute == 0 and aujourdhui.weekday() <= 4):
+        aujourdhuiToTest = str(aujourdhui.weekday()) + ":" + str(aujourdhui.hour) + ":" + str(aujourdhui.minute)
+
+        # Alerte pour le jour même :
+        if aujourdhuiToTest in alerteAujourdhui:
             devoirsPrets = {}
+            devoirsPrets["title"] = "Voilà les devoirs pour aujourd'hui"
 
-            if aujourdhui.weekday() < 4 or aujourdhui.weekday() == 6:
-                aujourdhui = aujourdhui + dt.timedelta(days=1)
-                devoirsPrets["title"] = "Voilà les devoirs pour demain"
-            elif aujourdhui.weekday() == 4:
-                aujourdhui = aujourdhui + dt.timedelta(days=3)
-                devoirsPrets["title"] = "Voilà les devoirs pour lundi"
-            elif aujourdhui.weekday() == 5:
-                aujourdhui = aujourdhui + dt.timedelta(days=2)
-                devoirsPrets["title"] = "Voilà les devoirs pour lundi"
             devoirsPrets = devoirsParDate(laDate=aujourdhui)
-
             if devoirsPrets["fields"] != []:
                 miseEnForme = discord.Embed.from_dict(devoirsPrets)
                 if random() < 0.001:
                     await channelFinal.send("@everyone", embed= miseEnForme)
                 else:
                     await channelFinal.send("@tout_le_monde", embed= miseEnForme)
-        
-        elif aujourdhui.hour == 8 and aujourdhui.minute == 0 and aujourdhui.weekday() <= 5:
+
+        # Alerte des devoirs pour le lendemain :
+        elif aujourdhuiToTest in alerteDemain:
             devoirsPrets = {}
-            devoirsPrets["title"] = "Voilà les devoirs pour aujourd'hui"
+            aujourdhui = aujourdhui + dt.timedelta(days=1)
+            devoirsPrets["title"] = "Voilà les devoirs pour demain"
 
             devoirsPrets = devoirsParDate(laDate=aujourdhui)
+            if devoirsPrets["fields"] != []:
+                miseEnForme = discord.Embed.from_dict(devoirsPrets)
+                if random() < 0.001:
+                    await channelFinal.send("@everyone", embed= miseEnForme)
+                else:
+                    await channelFinal.send("@tout_le_monde", embed= miseEnForme)
+
+        # Alerte des devoirs pour le lundi :
+        elif aujourdhuiToTest in alerteSemainePro:
+            devoirsPrets = {}
+            aujourdhui = aujourdhui + dt.timedelta(days= 7 - aujourdhui.weekday())
+            devoirsPrets["title"] = "Voilà les devoirs pour la semaine prochaine"
+
+            for i in range(0,4):
+                aujourdhui = aujourdhui + dt.timedelta(days=1)
+                devoirsPrets += devoirsParDate(laDate=aujourdhui)
             if devoirsPrets["fields"] != []:
                 miseEnForme = discord.Embed.from_dict(devoirsPrets)
                 if random() < 0.001:

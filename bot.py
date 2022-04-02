@@ -28,8 +28,9 @@ alerteSemainePro = ["4:18:30", "5:12:0", "6:18:30"]
 alerteDemain = ["0:18:30", "1:18:30", "2:18:30", "3:18:30"]
 alerteAujourdhui = ["0:8:0", "1:8:0", "2:8:0", "3:8:0", "4:8:0", "5:8:0"]
 
-@bot.check
-async def bannedList(ctx):
+
+# Gestion des bans de la commande  
+def bannedList(ctx):
     for role in ctx.author.roles:
         if role.id == 885425513865306112:
             return False
@@ -72,6 +73,8 @@ async def add_error(ctx, error):
     else :
         await ctx.send("Ca n'a pas marché dû à une erreur interne, veuillez contacter le développeur ...")
     print(error)
+# Gestion des bans de la commande add
+add.add_check(bannedList)
 
 # ========================================================
 # Supprimer un devoir du fichier .json par son indice
@@ -100,6 +103,8 @@ async def rm_error(ctx, error):
     else :
         await ctx.send("Ca n'a pas marché du à une erreur interne, veuillez contacter le développeur ...")
         print(error)
+# Gestion des bans de la commande rm
+rm.add_check(bannedList)
     
 # ========================================================
 # Afficher les devoirs à faire

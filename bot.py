@@ -160,7 +160,7 @@ async def my_background_task():
             modif = False
             cpt = 0
             for devoir in devoirs["fields"]:
-                if datetime.fromisoformat(devoir["date"]) < aujourdhui:
+                if datetime.fromisoformat(devoir["date"]).date() < aujourdhui.date():
                     del(devoirs["fields"][cpt])
                     modif = True
                 cpt += 1

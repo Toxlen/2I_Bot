@@ -81,10 +81,10 @@ async def amogus(ctx, nb : typing.Optional[int] = 1):
 @bot.command(name='sugoma', help="sus")
 async def sugoma(ctx, nb : typing.Optional[int] = 1):
     if nb < 1:
-        response = "https://amogus.org/amogus.png"
+        response = "https://cdn.discordapp.com/attachments/777292703801147402/961638400874663966/flipamogus.png"
         nb = -nb
     else:
-        response = "https://cdn.discordapp.com/attachments/777292703801147402/961635920078077952/reverseamogus.png"
+        response = "https://cdn.discordapp.com/attachments/777292703801147402/961638400581054475/flipreverseamogus.png"
         
     if nb > 20:
         nb = 20

@@ -60,6 +60,15 @@ async def gwened(ctx):
 
 
 # ========================================================
+# Amogus
+@bot.command(name='amogus', help="sus")
+async def amogus(ctx):
+    response = "https://amogus.org/amogus.png"
+    for i in range(1,10):
+        await ctx.send(response)
+
+
+# ========================================================
 # Ajouter les devoirs dans le .json des devoirs
 @bot.command(name='add', help="Ajoute des devoirs dans la liste de devoirs préciser la date, la matière (en un mot) puis une description")
 async def add(ctx, date: str, matiere: str, *, description):

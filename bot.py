@@ -52,6 +52,14 @@ async def camioned(ctx):
 
 
 # ========================================================
+# Gwened
+@bot.command(name='gwened', help="Un camion qui se baladait sur une toile toile toile")
+async def gwened(ctx):
+    response = "https://gwened.fr/"
+    await ctx.send(response)
+
+
+# ========================================================
 # Ajouter les devoirs dans le .json des devoirs
 @bot.command(name='add', help="Ajoute des devoirs dans la liste de devoirs préciser la date, la matière (en un mot) puis une description")
 async def add(ctx, date: str, matiere: str, *, description):

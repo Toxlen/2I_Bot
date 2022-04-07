@@ -65,9 +65,8 @@ async def gwened(ctx):
 async def amogus(ctx, nb : typing.Optional[int] = 1):
     response = "https://amogus.org/amogus.png"
     if nb > 20:
-        nb = 20
-    
-    for i in range(1,nb):
+        nb = 20    
+    for i in range(0,nb):
         await ctx.send(response)
 
 

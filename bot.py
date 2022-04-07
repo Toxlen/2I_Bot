@@ -60,12 +60,18 @@ async def gwened(ctx):
 
 
 # ========================================================
-# Amogus
+# Amogus 
 @bot.command(name='amogus', help="sus")
 async def amogus(ctx, nb : typing.Optional[int] = 1):
-    response = "https://amogus.org/amogus.png"
+    if nb < 1:
+        response = "https://cdn.discordapp.com/attachments/777292703801147402/961635920078077952/reverseamogus.png"
+        nb = -nb
+    else:
+        response = "https://amogus.org/amogus.png"
+        
     if nb > 20:
-        nb = 20    
+        nb = 20
+    
     for i in range(0,nb):
         await ctx.send(response)
 

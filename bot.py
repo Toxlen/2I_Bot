@@ -62,9 +62,12 @@ async def gwened(ctx):
 # ========================================================
 # Amogus
 @bot.command(name='amogus', help="sus")
-async def amogus(ctx):
+async def amogus(ctx, nb : typing.Optional[int] = 1):
     response = "https://amogus.org/amogus.png"
-    for i in range(1,10):
+    if nb > 20:
+        nb = 20
+    
+    for i in range(1,nb):
         await ctx.send(response)
 
 

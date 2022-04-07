@@ -53,7 +53,7 @@ async def camioned(ctx):
 
 # ========================================================
 # Gwened
-@bot.command(name='gwened', help="Un camion qui se baladait sur une toile toile toile")
+@bot.command(name='gwened', help="Gweno momento")
 async def gwened(ctx):
     response = "https://gwened.fr/"
     await ctx.send(response)

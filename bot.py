@@ -36,12 +36,14 @@ def bannedList(ctx):
             return False
     return True
 
+# Coroutine appelé après chaque commandes (permet ici de supprimer le message de commande sauf pour les commandes add, rm et ping)
+@bot.after_invoke
 async def after_invoke_cmd(ctx):
-    if(ctx.command.name not in ["add", "rm"]):
+    if(ctx.command.name not in ["add", "rm", "ping"]):
         await ctx.message.delete()
 
-@bot.after_invoke(coro=after_invoke_cmd)
 
+# ========================================================
 # Test du ping pong
 @bot.command(name='ping', help="Répond pong")
 async def ping(ctx):

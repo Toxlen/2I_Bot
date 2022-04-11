@@ -36,6 +36,12 @@ def bannedList(ctx):
             return False
     return True
 
+async def after_invoke_cmd(ctx):
+    if(ctx.command.name not in ["add", "rm"]):
+        await ctx.message.delete()
+
+@bot.after_invoke(coro=after_invoke_cmd)
+
 # Test du ping pong
 @bot.command(name='ping', help="Répond pong")
 async def ping(ctx):

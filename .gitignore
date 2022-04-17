@@ -4,6 +4,8 @@ __pycache__
 devoirs.json
 
 *.zip
+*.png
+*.jpg
 
 Sample*
 sample*

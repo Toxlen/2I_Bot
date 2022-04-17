@@ -1,6 +1,7 @@
 #!/usr/bin/python3
 
 import os
+from urllib import response
 import discord
 import typing # C'est pour si on veut faire des argument non obligatoire
 import asyncio
@@ -39,7 +40,7 @@ def bannedList(ctx):
 # Coroutine appelé après chaque commandes (permet ici de supprimer le message de commande sauf pour les commandes add, rm et ping)
 @bot.after_invoke
 async def after_invoke_cmd(ctx):
-    if(ctx.command.name not in ["add", "rm", "ping"]):
+    if(ctx.command.name not in ["add", "md", "rm", "ping"]):
         await ctx.message.delete()
 
 
@@ -103,7 +104,14 @@ async def sugoma(ctx, nb : typing.Optional[int] = 1):
 
 # ========================================================
 # Ajouter les devoirs dans le .json des devoirs
-@bot.command(name='add', help="Ajoute des devoirs dans la liste de devoirs préciser la date, la matière (en un mot) puis une description")
+@bot.command(
+    name='add', 
+    help="""
+    Ajoute des devoirs dans la liste de devoirs
+    Il faut préciser : 
+        - la date au format JJ/MM ou JJ/MM/AA
+        - la matière en un mot
+        - puis une description de la longueur souhaité""")
 async def add(ctx, date: str, matiere: str, *, description):
     
     date = dateFormating(date)
@@ -134,22 +142,114 @@ async def add_error(ctx, error):
 # Gestion des bans de la commande add
 add.add_check(bannedList)
 
+
+# ========================================================
+# Ajouter les devoirs dans le .json des devoirs
+@bot.command(
+    name='md', 
+    help="""
+    Modifie des devoirs dans la liste de devoirs.
+    La commande prend obligatoirement en argument l'indice du devoir à modifier.
+    Puis soit on utilise les modificateurs précis soit on entre le devoir commme avec la comande add.
+    Les modificateur : 
+        - -d [DATE] : Pour modifier la date
+        - -m [MATIERE] : Pour modifier la matière
+        - -e [DESCRIPTION] : Pour modifier la description""")
+async def md(ctx, indice: int, arg1: typing.Optional[str] = "", arg2: typing.Optional[str] = "", *, description: typing.Optional[str] = ""):
+    devoirs = getDevoirs()
+    toModify = {}
+    response = ""
+    
+    try:
+        toModify = devoirs["fields"][indice]
+    except IndexError:
+        raise commands.BadArgument
+
+    if arg1 == "-d":
+        # Modification de la date du devoir
+        date = dateFormating(arg2)
+
+        if date == None:
+            raise commands.BadArgument
+
+        response = "La date à été modifier de **" + datetime.fromisoformat(toModify["date"]).strftime("%d/%m/%Y")
+
+        toModify["date"] = date.isoformat()
+        
+        response += "** à la date suivante **" + datetime.fromisoformat(toModify["date"]).strftime("%d/%m/%Y") + "**\n"
+        
+    elif arg1 == "-m":
+        # Modification de la matière du devoir
+        response = "La matière à été modifié de **" + toModify["name"]
+
+        toModify["name"] = arg2
+
+        response += "** à la matière suivante **" + toModify["name"] + "**\n"
+
+    elif arg1 == "-e":
+        # Modification de l'explication/description du devoir
+        response = "La description à été modifié de **" + toModify["value"]
+
+        toModify["value"] = arg2 + " " + description
+
+        response += "** à la description suivante **" + toModify["value"] + "**\n"
+
+    else:
+        # Modifiction de tout 
+        date = dateFormating(arg1)
+
+        if date == None:
+            raise commands.BadArgument
+
+        response = "Le devoir à été modifié de *" + datetime.fromisoformat(toModify["date"]).strftime("%d/%m/%Y") + " : " + toModify["name"] + " : " + toModify["value"]
+        
+        toModify["date"] = date.isoformat()
+        toModify["name"] = arg2
+        toModify["value"] = description
+        
+        response += "* au devoir suivant *" + datetime.fromisoformat(toModify["date"]).strftime("%d/%m/%Y") + " : " + toModify["name"] + " : " + toModify["value"] + "*"
+
+
+
+    devoirs["fields"][indice] = toModify
+
+    setDevoirs(devoirs)
+    
+    response += "Vous pouvez également voir la liste des devoirs en tapant !devoirs"
+    await ctx.send(response)
+# Gestion des erreur de la commande md
+@md.error
+async def md_error(ctx, error):
+    if isinstance(error, commands.BadArgument) :
+        await ctx.send("Fait attention au format de la date ou a l'index du devoir !")
+    if isinstance(error, commands.CommandError) :
+        await ctx.send(choice(tgGifs))
+    else :
+        await ctx.send("Ca n'a pas marché dû à une erreur interne, veuillez contacter le développeur ...")
+    print(error)
+# Gestion des bans de la commande md
+md.add_check(bannedList)
+
+
 # ========================================================
 # Supprimer un devoir du fichier .json par son indice
-@bot.command(help="Supprimer un devoir de la liste par son indice (commence à 0, en négatif part de la fin, on est des devs ou pas)")
-async def rm(ctx, numero: int):
+@bot.command(
+    help="""
+    Supprimer un devoir de la liste par son indice 
+    Attention l'indice commence à 0, en négatif part de la fin, on est des devs ou pas ?""")
+async def rm(ctx, indice: int):
 
 
     devoirs = getDevoirs()
     
     try:
-        del(devoirs["fields"][numero])
+        del(devoirs["fields"][indice])
     except IndexError:
         raise commands.BadArgument
 
     setDevoirs(devoirs)
 
-    response = f"Je supprime le devoir n°{numero} de la liste ! \nVous pouvez également voir la liste des devoirs en tapant !devoirs"
+    response = f"Je supprime le devoir n°{indice} de la liste ! \nVous pouvez également voir la liste des devoirs en tapant !devoirs"
     await ctx.send(response)
 # Gestion des erreur de la commande rm
 @rm.error
@@ -166,7 +266,11 @@ rm.add_check(bannedList)
     
 # ========================================================
 # Afficher les devoirs à faire
-@bot.command(help="Permet d'afficher les devoirs à faire")
+@bot.command(
+    help="""
+    Permet d'afficher les devoirs à faire.
+    Ils sont trié par date par défaut mais il peuvent être trié par matière avec le modificatieur -m.
+    Il est également possible d'afficher que les devoirs d'une matière en précisant la matière derrière le modificateur -m.""")
 async def devoirs(ctx, parameter: typing.Optional[str] = "-d", *, description: typing.Optional[str] = "" ):
     devoirsPrets = {}
 

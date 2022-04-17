@@ -2,4 +2,12 @@
 __pycache__
 .env
 devoirs.json
+
 *.zip
+
+Sample*
+sample*
+Ex*
+ex*
+Test*
+test*

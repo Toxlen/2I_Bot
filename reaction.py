@@ -9,7 +9,7 @@ load_dotenv()
 
 TOKEN = os.environ['DISCORD_TOKEN'] 
 
-spamJuliette = True
+spamJuliette = False
 client = discord.Client()
 
 @client.event

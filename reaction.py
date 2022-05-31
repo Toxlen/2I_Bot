@@ -2,6 +2,7 @@ import os
 import discord
 from emoji import EMOJI_DATA
 import datetime
+from random import random
 
 from dotenv import load_dotenv
 from numpy import memmap

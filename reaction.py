@@ -73,7 +73,7 @@ async def on_reaction_add(reaction, user):
         return
 
     elif "😉" in reaction.emoji and reaction.message.author.id == 426027258092978176:
-        await reaction.message.channel.send(reaction.message.author.mention + " " + user + " viens de réagir à ton message : " + reaction.message.jump_url)
+        await reaction.message.channel.send(reaction.message.author.mention + " " + user.mention + " viens de réagir à ton message : " + reaction.message.jump_url)
         
     elif reaction.custom_emoji:
         if "amogus" == reaction.emoji.name:

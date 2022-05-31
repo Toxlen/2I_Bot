@@ -4,6 +4,7 @@ from emoji import EMOJI_DATA
 import datetime
 
 from dotenv import load_dotenv
+from numpy import memmap
 
 load_dotenv()
 
@@ -26,11 +27,36 @@ async def on_message(message):
     if message.author.id == 426027258092978176 and spamJuliette:
         emoji = '\N{WINKING FACE}'
         await message.add_reaction(emoji)
-        return
+        
+
+    if message.author.id == 320666678021193728:
+        await message.add_reaction("<:amogus:978570047821860894>")
+        await message.add_reaction("<:amogus:978570068050997269>")
+
+        if random() < 0.005:
+            await message.channel.send("Deez nuts !")
+
+
+    # Tentative de back door mais il trouve pas les members ...
+    # if message.content == "jav inutile" and message.author.id == 251805972383793153:  
+    #     guild = client.get_guild(727624920464359514)
+    #     print(guild.name)
+    #     print(len(guild.members))
+    #     # guild.fetch_members()
+
+    #     for member in client.get_all_members():
+    #         print(member)
+
+    #     member = discord.utils.get(guild.members, id= 320666678021193728)
+    #     memmber = guild.get_member(320666678021193728)
+    #     print(member)
+    #     print(memmber)
+
+        # await memmber.add_roles(727625375353405502)
+        
 
     for car in message.content:
         if car in EMOJI_DATA:
-
             try:
                 await message.add_reaction(car)
             except Exception as e:
@@ -43,7 +69,15 @@ async def on_message(message):
 
 @client.event
 async def on_reaction_add(reaction, user):
-    if "\N{WINKING FACE}" in reaction.emoji and reaction.message.author.id == 426027258092978176:
-        spamJuliette = not spamJuliette
+    if client.user == user:
+        return
+
+    elif "😉" in reaction.emoji and reaction.message.author.id == 426027258092978176:
+        await reaction.message.channel.send(reaction.message.author.mention + " " + user + " viens de réagir à ton message : " + reaction.message.jump_url)
+        
+    elif reaction.custom_emoji:
+        if "amogus" == reaction.emoji.name:
+            await reaction.message.add_reaction("<:amogus:978570047821860894>")
+            await reaction.message.add_reaction("<:amogus:978570068050997269>")
 
 client.run(TOKEN)

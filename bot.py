@@ -40,7 +40,7 @@ def bannedList(ctx):
 # Coroutine appelé après chaque commandes (permet ici de supprimer le message de commande sauf pour les commandes add, rm et ping)
 @bot.after_invoke
 async def after_invoke_cmd(ctx):
-    if(ctx.command.name not in ["add", "md", "rm", "ping"]):
+    if(ctx.command.name not in ["add", "md", "rm", "ping", "extract"]):
         await ctx.message.delete()
 
 
@@ -300,7 +300,7 @@ async def devoirs_error(ctx, error):
         await ctx.send(choice(tgGifs))
     else :
         await ctx.send("Ca n'a pas marché du à une erreur interne, veuillez contacter le développeur ...")
-        print(datetime.datetime.now().time(), error)
+        print(datetime.now().time(), error)
 
 # ========================================================
 # Tache de vérification régulière
@@ -382,5 +382,79 @@ async def my_background_task():
 
         await asyncio.sleep(60) # task runs every 60 seconds
 
-bot.loop.create_task(my_background_task())
-bot.run(TOKEN)
+# ========================================================
+# Commande pour process l'image jointe et en extraire le texte
+from PIL import Image
+import pytesseract
+import re
+
+@bot.command(
+    help="""
+    Permet d'extraire le texte d'une image
+    La langue d'interprétation est de base en anglais mais peut être changé en une autre avec l'argument -l [LANG] (fra pour français).
+    Liste des langues dispo : """ + str(pytesseract.get_languages(config='')))
+async def extract(ctx, parameter: typing.Optional[str] = "-l", *, description: typing.Optional[str] = "eng" ):
+    if description not in pytesseract.get_languages(config=''):
+        raise commands.BadArgument
+
+    if ctx.message.reference:
+        original = await ctx.fetch_message(id=ctx.message.reference.message_id)
+
+        if len(original.attachments) == 0:
+            await ctx.send("Pas d'image dans ce message")
+            return
+        elif len(ctx.message.attachments) > 1:
+            await ctx.send("Trop d'images dans ce message !")
+            return
+        
+        if original.attachments[0].content_type in ["image/jpeg", "image/png"]:
+            async with ctx.typing():
+                pathToImage = "./images/" + original.attachments[0].filename
+                await original.attachments[0].save(pathToImage)
+                text = pytesseract.image_to_string(pathToImage)
+                os.remove(pathToImage)
+                await ctx.send(text)
+            return
+
+    if len(ctx.message.attachments) == 0:
+        url = re.search("(?P<url>https?://[^\s]+)", parameter).group("url")
+        if url == "":
+            await ctx.send("Pas d'image dans ce message")
+            return
+        print(url)
+        return
+        
+    elif len(ctx.message.attachments) > 1:
+        # plusieurs liens
+        # re.findall(r'(https?://[^\s]+)', myString)
+
+        ctx.send("Bro attend le fait d'envoyer plusieurs photos n'est pas encore implémenté !")
+        return
+    
+    if ctx.message.attachments[0].content_type in ["image/jpeg", "image/png"]:
+        async with ctx.typing():
+            pathToImage = "./images/" + ctx.message.attachments[0].filename
+            await ctx.message.attachments[0].save(pathToImage)
+            text = pytesseract.image_to_string(pathToImage)
+            os.remove(pathToImage)
+            await ctx.send(text)
+        return
+    
+    
+
+    
+# Gestion des erreur de la commande devoirs
+@extract.error
+async def devoirs_error(ctx, error):
+    if isinstance(error, commands.BadArgument) :
+        await ctx.send("Tu as mal écris la commande !")
+    if isinstance(error, commands.CommandError) :
+        await ctx.send(choice(tgGifs))
+        print(datetime.now().time(), error)
+    else :
+        await ctx.send("Ca n'a pas marché du à une erreur interne, veuillez contacter le développeur ...")
+        print(datetime.now().time(), error)
+
+if __name__ == "__main__":
+    bot.loop.create_task(my_background_task())
+    bot.run(TOKEN)

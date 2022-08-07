@@ -411,7 +411,7 @@ async def extract(ctx, parameter: typing.Optional[str] = "-l", *, description: t
             async with ctx.typing():
                 pathToImage = "./images/" + original.attachments[0].filename
                 await original.attachments[0].save(pathToImage)
-                text = pytesseract.image_to_string(pathToImage)
+                text = pytesseract.image_to_string(pathToImage, lang=description)
                 os.remove(pathToImage)
                 await ctx.send(text)
             return
@@ -435,13 +435,10 @@ async def extract(ctx, parameter: typing.Optional[str] = "-l", *, description: t
         async with ctx.typing():
             pathToImage = "./images/" + ctx.message.attachments[0].filename
             await ctx.message.attachments[0].save(pathToImage)
-            text = pytesseract.image_to_string(pathToImage)
+            text = pytesseract.image_to_string(pathToImage, lang=description)
             os.remove(pathToImage)
             await ctx.send(text)
         return
-    
-    
-
     
 # Gestion des erreur de la commande devoirs
 @extract.error

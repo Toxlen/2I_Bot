@@ -391,9 +391,9 @@ import re
 @bot.command(
     help="""
     Permet d'extraire le texte d'une image
-    La langue d'interprétation est de base en anglais mais peut être changé en une autre avec l'argument -l [LANG] (fra pour français).
+    La langue d'interprétation est de base en français mais peut être changé en une autre avec l'argument -l [LANG].
     Liste des langues dispo : """ + str(pytesseract.get_languages(config='')))
-async def extract(ctx, parameter: typing.Optional[str] = "-l", *, description: typing.Optional[str] = "eng" ):
+async def extract(ctx, parameter: typing.Optional[str] = "-l", *, description: typing.Optional[str] = "fra" ):
     if description not in pytesseract.get_languages(config=''):
         raise commands.BadArgument
 

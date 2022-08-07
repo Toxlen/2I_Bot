@@ -134,6 +134,8 @@ async def add(ctx, date: str, matiere: str, *, description):
 async def add_error(ctx, error):
     if isinstance(error, commands.BadArgument) :
         await ctx.send("Fait attention au format de la date !")
+    if isinstance(error, commands.CheckFailure) :
+        await ctx.send("Tu crois pouvoir faire quoi toi ?")
     if isinstance(error, commands.CommandError) :
         await ctx.send("Ca n'a pas marché dû à une erreur interne, veuillez contacter le développeur ...")
         print(datetime.now().time(), error)
@@ -218,6 +220,8 @@ async def md(ctx, indice: int, arg1: typing.Optional[str] = "", arg2: typing.Opt
 async def md_error(ctx, error):
     if isinstance(error, commands.BadArgument) :
         await ctx.send("Fait attention au format de la date ou a l'index du devoir !")
+    if isinstance(error, commands.CheckFailure) :
+        await ctx.send("Tu crois pouvoir faire quoi toi ?")
     if isinstance(error, commands.CommandError) :
         await ctx.send("Ca n'a pas marché dû à une erreur interne, veuillez contacter le développeur ...")
         print(datetime.now().time(), error)
@@ -250,6 +254,8 @@ async def rm(ctx, indice: int):
 async def rm_error(ctx, error):
     if isinstance(error, commands.BadArgument) :
         await ctx.send("Cette indice de devoir n'existe pas (ça commence à 0) !")
+    if isinstance(error, commands.CheckFailure) :
+        await ctx.send("Tu crois pouvoir faire quoi toi ?")
     if isinstance(error, commands.CommandError) :
         await ctx.send("Ca n'a pas marché du à une erreur interne, veuillez contacter le développeur ...")
         print(datetime.now().time(), error)

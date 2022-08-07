@@ -135,10 +135,8 @@ async def add_error(ctx, error):
     if isinstance(error, commands.BadArgument) :
         await ctx.send("Fait attention au format de la date !")
     if isinstance(error, commands.CommandError) :
-        await ctx.send(choice(tgGifs))
-    else :
         await ctx.send("Ca n'a pas marché dû à une erreur interne, veuillez contacter le développeur ...")
-    print(error)
+        print(datetime.now().time(), error)
 # Gestion des bans de la commande add
 add.add_check(bannedList)
 
@@ -209,8 +207,6 @@ async def md(ctx, indice: int, arg1: typing.Optional[str] = "", arg2: typing.Opt
         
         response += "* au devoir suivant *" + datetime.fromisoformat(toModify["date"]).strftime("%d/%m/%Y") + " : " + toModify["name"] + " : " + toModify["value"] + "*"
 
-
-
     devoirs["fields"][indice] = toModify
 
     setDevoirs(devoirs)
@@ -223,10 +219,8 @@ async def md_error(ctx, error):
     if isinstance(error, commands.BadArgument) :
         await ctx.send("Fait attention au format de la date ou a l'index du devoir !")
     if isinstance(error, commands.CommandError) :
-        await ctx.send(choice(tgGifs))
-    else :
         await ctx.send("Ca n'a pas marché dû à une erreur interne, veuillez contacter le développeur ...")
-    print(error)
+        print(datetime.now().time(), error)
 # Gestion des bans de la commande md
 md.add_check(bannedList)
 
@@ -257,10 +251,8 @@ async def rm_error(ctx, error):
     if isinstance(error, commands.BadArgument) :
         await ctx.send("Cette indice de devoir n'existe pas (ça commence à 0) !")
     if isinstance(error, commands.CommandError) :
-        await ctx.send(choice(tgGifs))
-    else :
         await ctx.send("Ca n'a pas marché du à une erreur interne, veuillez contacter le développeur ...")
-        print(error)
+        print(datetime.now().time(), error)
 # Gestion des bans de la commande rm
 rm.add_check(bannedList)
     
@@ -296,9 +288,7 @@ async def devoirs(ctx, parameter: typing.Optional[str] = "-d", *, description: t
 async def devoirs_error(ctx, error):
     if isinstance(error, commands.BadArgument) :
         await ctx.send("Tu as mal écris la commande !")
-    if isinstance(error, commands.CommandError) :
-        await ctx.send(choice(tgGifs))
-    else :
+    if isinstance(error, commands.CommandError):
         await ctx.send("Ca n'a pas marché du à une erreur interne, veuillez contacter le développeur ...")
         print(datetime.now().time(), error)
 
@@ -446,9 +436,6 @@ async def devoirs_error(ctx, error):
     if isinstance(error, commands.BadArgument) :
         await ctx.send("Tu as mal écris la commande !")
     if isinstance(error, commands.CommandError) :
-        await ctx.send(choice(tgGifs))
-        print(datetime.now().time(), error)
-    else :
         await ctx.send("Ca n'a pas marché du à une erreur interne, veuillez contacter le développeur ...")
         print(datetime.now().time(), error)
 

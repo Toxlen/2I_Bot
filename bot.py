@@ -383,6 +383,16 @@ async def my_background_task():
 from PIL import Image
 import pytesseract
 import re
+import requests
+
+def dowloadImage(src, dest):
+    response = requests.get(src)
+    if not response.ok:
+        raise commands.BadArgument(message="Failed to donwload image")
+
+    img_data = response.content
+    with open(dest, 'wb') as handler:
+        handler.write(img_data)
 
 @bot.command(
     help="""
@@ -397,7 +407,17 @@ async def extract(ctx, parameter: typing.Optional[str] = "-l", *, description: t
         original = await ctx.fetch_message(id=ctx.message.reference.message_id)
 
         if len(original.attachments) == 0:
-            await ctx.send("Pas d'image dans ce message")
+            url = re.search("(?P<url>https?://[^\s]+)", original.content).group("url")
+            if url == "" and not url.endswith([".png", ".jpg", ".jpeg"]):
+                await ctx.send("Pas d'image dans ce message")
+                return
+            async with ctx.typing():
+                filename = url.split("/").pop()
+                pathToImage = "./images/" + filename
+                dowloadImage(url, pathToImage)
+                text = pytesseract.image_to_string(pathToImage, lang=description)
+                os.remove(pathToImage)
+                await ctx.send(text)
             return
         elif len(ctx.message.attachments) > 1:
             await ctx.send("Trop d'images dans ce message !")
@@ -414,10 +434,16 @@ async def extract(ctx, parameter: typing.Optional[str] = "-l", *, description: t
 
     if len(ctx.message.attachments) == 0:
         url = re.search("(?P<url>https?://[^\s]+)", parameter).group("url")
-        if url == "":
+        if url == "" and not url.endswith([".png", ".jpg", ".jpeg"]):
             await ctx.send("Pas d'image dans ce message")
             return
-        print(url)
+        async with ctx.typing():
+            filename = url.split("/").pop()
+            pathToImage = "./images/" + filename
+            dowloadImage(url, pathToImage)
+            text = pytesseract.image_to_string(pathToImage, lang=description)
+            os.remove(pathToImage)
+            await ctx.send(text)
         return
         
     elif len(ctx.message.attachments) > 1:
@@ -440,11 +466,12 @@ async def extract(ctx, parameter: typing.Optional[str] = "-l", *, description: t
 @extract.error
 async def devoirs_error(ctx, error):
     if isinstance(error, commands.BadArgument) :
-        await ctx.send("Tu as mal écris la commande !")
+        await ctx.send("Tu as mal écris la commande !\n", error.message)
     if isinstance(error, commands.CommandError) :
         await ctx.send("Ca n'a pas marché du à une erreur interne, veuillez contacter le développeur ...")
         print(datetime.now().time(), error)
 
 if __name__ == "__main__":
     bot.loop.create_task(my_background_task())
+    print(datetime.now().time(), "Let's get started !")
     bot.run(TOKEN)

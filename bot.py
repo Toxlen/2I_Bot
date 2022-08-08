@@ -417,7 +417,7 @@ async def extract(ctx, parameter: typing.Optional[str] = "-l", *, description: t
                 dowloadImage(url, pathToImage)
                 text = pytesseract.image_to_string(pathToImage, lang=description)
                 os.remove(pathToImage)
-                await ctx.send(text)
+                await ctx.send("```" + text + "```")
             return
         elif len(ctx.message.attachments) > 1:
             await ctx.send("Trop d'images dans ce message !")
@@ -429,7 +429,7 @@ async def extract(ctx, parameter: typing.Optional[str] = "-l", *, description: t
                 await original.attachments[0].save(pathToImage)
                 text = pytesseract.image_to_string(pathToImage, lang=description)
                 os.remove(pathToImage)
-                await ctx.send(text)
+                await ctx.send("```" + text + "```")
             return
 
     if len(ctx.message.attachments) == 0:
@@ -443,7 +443,7 @@ async def extract(ctx, parameter: typing.Optional[str] = "-l", *, description: t
             dowloadImage(url, pathToImage)
             text = pytesseract.image_to_string(pathToImage, lang=description)
             os.remove(pathToImage)
-            await ctx.send(text)
+            await ctx.send("```" + text + "```")
         return
         
     elif len(ctx.message.attachments) > 1:
@@ -459,7 +459,7 @@ async def extract(ctx, parameter: typing.Optional[str] = "-l", *, description: t
             await ctx.message.attachments[0].save(pathToImage)
             text = pytesseract.image_to_string(pathToImage, lang=description)
             os.remove(pathToImage)
-            await ctx.send(text)
+            await ctx.send("```" + text + "```")
         return
     
 # Gestion des erreur de la commande devoirs

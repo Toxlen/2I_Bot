@@ -397,10 +397,10 @@ def dowloadImage(src, dest):
 @bot.command(
     help="""
     Permet d'extraire le texte d'une image
-    La langue d'interprétation est de base en français mais peut être changé en une autre avec l'argument -l [LANG].
+    La langue d'interprétation est de base en français mais peut être changé en une autre avec l'argument [LANG].
     Liste des langues dispo : """ + str(pytesseract.get_languages(config='')))
-async def extract(ctx, parameter: typing.Optional[str] = "-l", *, description: typing.Optional[str] = "fra" ):
-    if description not in pytesseract.get_languages(config=''):
+async def extract(ctx, parameter: typing.Optional[str] = "fra"):
+    if parameter not in pytesseract.get_languages(config=''):
         raise commands.BadArgument
 
     if ctx.message.reference:
@@ -415,7 +415,7 @@ async def extract(ctx, parameter: typing.Optional[str] = "-l", *, description: t
                 filename = url.split("/").pop()
                 pathToImage = "./images/" + filename
                 dowloadImage(url, pathToImage)
-                text = pytesseract.image_to_string(pathToImage, lang=description)
+                text = pytesseract.image_to_string(pathToImage, lang=parameter)
                 os.remove(pathToImage)
                 await ctx.send("```" + text.strip() + "```")
             return
@@ -427,7 +427,7 @@ async def extract(ctx, parameter: typing.Optional[str] = "-l", *, description: t
             async with ctx.typing():
                 pathToImage = "./images/" + original.attachments[0].filename
                 await original.attachments[0].save(pathToImage)
-                text = pytesseract.image_to_string(pathToImage, lang=description)
+                text = pytesseract.image_to_string(pathToImage, lang=parameter)
                 os.remove(pathToImage)
                 await ctx.send("```" + text.strip() + "```")
             return
@@ -441,7 +441,7 @@ async def extract(ctx, parameter: typing.Optional[str] = "-l", *, description: t
             filename = url.split("/").pop()
             pathToImage = "./images/" + filename
             dowloadImage(url, pathToImage)
-            text = pytesseract.image_to_string(pathToImage, lang=description)
+            text = pytesseract.image_to_string(pathToImage, lang=parameter)
             os.remove(pathToImage)
             await ctx.send("```" + text.strip() + "```")
         return
@@ -457,7 +457,7 @@ async def extract(ctx, parameter: typing.Optional[str] = "-l", *, description: t
         async with ctx.typing():
             pathToImage = "./images/" + ctx.message.attachments[0].filename
             await ctx.message.attachments[0].save(pathToImage)
-            text = pytesseract.image_to_string(pathToImage, lang=description)
+            text = pytesseract.image_to_string(pathToImage, lang=parameter)
             os.remove(pathToImage)
             await ctx.send("```" + text.strip() + "```")
         return

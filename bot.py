@@ -1,7 +1,6 @@
 #!/usr/bin/python3
 
 import os
-from types import NoneType
 import discord
 import typing # C'est pour si on veut faire des argument non obligatoire
 import asyncio

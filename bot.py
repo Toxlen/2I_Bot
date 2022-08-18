@@ -421,7 +421,7 @@ async def extract(ctx, parameter: typing.Optional[str] = "fra", parameter2: typi
                 text = pytesseract.image_to_string(pathToImage, lang=parameter)
                 os.remove(pathToImage)
                 await ctx.send("```" + text.strip() + "```")
-            return
+                return
         elif len(ctx.message.attachments) > 1:
             await ctx.send("Trop d'images dans ce message !")
             return
@@ -433,7 +433,7 @@ async def extract(ctx, parameter: typing.Optional[str] = "fra", parameter2: typi
                 text = pytesseract.image_to_string(pathToImage, lang=parameter)
                 os.remove(pathToImage)
                 await ctx.send("```" + text.strip() + "```")
-            return
+                return
 
     if len(ctx.message.attachments) == 0:
         urlRe = re.search("(?P<url>https?://[^\s]+)", ctx.message.content)
@@ -466,7 +466,7 @@ async def extract(ctx, parameter: typing.Optional[str] = "fra", parameter2: typi
             text = pytesseract.image_to_string(pathToImage, lang=lang)
             os.remove(pathToImage)
             await ctx.send("```" + text.strip() + "```")
-        return
+            return
 
     if parameter not in pytesseract.get_languages(config=''):
         raise commands.BadArgument
@@ -485,7 +485,7 @@ async def extract(ctx, parameter: typing.Optional[str] = "fra", parameter2: typi
             text = pytesseract.image_to_string(pathToImage, lang=parameter)
             os.remove(pathToImage)
             await ctx.send("```" + text.strip() + "```")
-        return
+            return
 
 # Gestion des erreur de la commande devoirs
 @extract.error

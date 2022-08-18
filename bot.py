@@ -1,7 +1,7 @@
 #!/usr/bin/python3
 
 import os
-from urllib import response
+from types import NoneType
 import discord
 import typing # C'est pour si on veut faire des argument non obligatoire
 import asyncio
@@ -17,8 +17,8 @@ from dotenv import load_dotenv
 
 load_dotenv()
 
-TOKEN = os.environ['DISCORD_TOKEN'] 
-GUILD = os.environ['DISCORD_GUILD'] 
+TOKEN = os.environ['DISCORD_TOKEN']
+GUILD = os.environ['DISCORD_GUILD']
 CHANNEL = int(os.environ['DISCORD_CHANNEL'])
 
 bot = commands.Bot(command_prefix='!')
@@ -30,7 +30,7 @@ alerteDemain = ["0:18:30", "1:18:30", "2:18:30", "3:18:30"]
 alerteAujourdhui = ["0:8:0", "1:8:0", "2:8:0", "3:8:0", "4:8:0", "5:8:0"]
 
 
-# Gestion des bans de la commande  
+# Gestion des bans de la commande
 def bannedList(ctx):
     for role in ctx.author.roles:
         if role.id == 885425513865306112:
@@ -69,7 +69,7 @@ async def gwened(ctx):
 
 
 # ========================================================
-# Amogus 
+# Amogus
 @bot.command(name='amogus', help="sus")
 async def amogus(ctx, nb : typing.Optional[int] = 1):
     if nb < 1:
@@ -80,13 +80,13 @@ async def amogus(ctx, nb : typing.Optional[int] = 1):
 
     if nb > 20:
         nb = 20
-    
+
     for i in range(0,nb):
         await ctx.send(response)
 
 
 # ========================================================
-# Sugoma 
+# Sugoma
 @bot.command(name='sugoma', help="sus")
 async def sugoma(ctx, nb : typing.Optional[int] = 1):
     if nb < 1:
@@ -94,10 +94,10 @@ async def sugoma(ctx, nb : typing.Optional[int] = 1):
         nb = -nb
     else:
         response = "https://cdn.discordapp.com/attachments/777292703801147402/961638400874663966/flipamogus.png"
-        
+
     if nb > 20:
         nb = 20
-    
+
     for i in range(0,nb):
         await ctx.send(response)
 
@@ -105,15 +105,15 @@ async def sugoma(ctx, nb : typing.Optional[int] = 1):
 # ========================================================
 # Ajouter les devoirs dans le .json des devoirs
 @bot.command(
-    name='add', 
+    name='add',
     help="""
     Ajoute des devoirs dans la liste de devoirs
-    Il faut préciser : 
+    Il faut préciser :
         - la date au format JJ/MM ou JJ/MM/AA
         - la matière en un mot
         - puis une description de la longueur souhaité""")
 async def add(ctx, date: str, matiere: str, *, description):
-    
+
     date = dateFormating(date)
 
     if date == None:
@@ -125,7 +125,7 @@ async def add(ctx, date: str, matiere: str, *, description):
     devoirs["fields"].append(toAppend)
 
     setDevoirs(devoirs)
-    
+
     date_str = date.strftime("%d/%m/%Y")
     response = f"J'ajoute le devoir de {matiere} pour le {date_str} vous serez prevenus la veille ! \nVous pouvez également voir la liste des devoirs en tapant !devoirs"
     await ctx.send(response)
@@ -146,12 +146,12 @@ add.add_check(bannedList)
 # ========================================================
 # Ajouter les devoirs dans le .json des devoirs
 @bot.command(
-    name='md', 
+    name='md',
     help="""
     Modifie des devoirs dans la liste de devoirs.
     La commande prend obligatoirement en argument l'indice du devoir à modifier.
     Puis soit on utilise les modificateurs précis soit on entre le devoir commme avec la comande add.
-    Les modificateur : 
+    Les modificateur :
         - -d [DATE] : Pour modifier la date
         - -m [MATIERE] : Pour modifier la matière
         - -e [DESCRIPTION] : Pour modifier la description""")
@@ -159,7 +159,7 @@ async def md(ctx, indice: int, arg1: typing.Optional[str] = "", arg2: typing.Opt
     devoirs = getDevoirs()
     toModify = {}
     response = ""
-    
+
     try:
         toModify = devoirs["fields"][indice]
     except IndexError:
@@ -175,9 +175,9 @@ async def md(ctx, indice: int, arg1: typing.Optional[str] = "", arg2: typing.Opt
         response = "La date à été modifier de **" + datetime.fromisoformat(toModify["date"]).strftime("%d/%m/%Y")
 
         toModify["date"] = date.isoformat()
-        
+
         response += "** à la date suivante **" + datetime.fromisoformat(toModify["date"]).strftime("%d/%m/%Y") + "**\n"
-        
+
     elif arg1 == "-m":
         # Modification de la matière du devoir
         response = "La matière à été modifié de **" + toModify["name"]
@@ -195,24 +195,24 @@ async def md(ctx, indice: int, arg1: typing.Optional[str] = "", arg2: typing.Opt
         response += "** à la description suivante **" + toModify["value"] + "**\n"
 
     else:
-        # Modifiction de tout 
+        # Modifiction de tout
         date = dateFormating(arg1)
 
         if date == None:
             raise commands.BadArgument
 
         response = "Le devoir à été modifié de *" + datetime.fromisoformat(toModify["date"]).strftime("%d/%m/%Y") + " : " + toModify["name"] + " : " + toModify["value"]
-        
+
         toModify["date"] = date.isoformat()
         toModify["name"] = arg2
         toModify["value"] = description
-        
+
         response += "* au devoir suivant *" + datetime.fromisoformat(toModify["date"]).strftime("%d/%m/%Y") + " : " + toModify["name"] + " : " + toModify["value"] + "*"
 
     devoirs["fields"][indice] = toModify
 
     setDevoirs(devoirs)
-    
+
     response += "Vous pouvez également voir la liste des devoirs en tapant !devoirs"
     await ctx.send(response)
 # Gestion des erreur de la commande md
@@ -233,13 +233,13 @@ md.add_check(bannedList)
 # Supprimer un devoir du fichier .json par son indice
 @bot.command(
     help="""
-    Supprimer un devoir de la liste par son indice 
+    Supprimer un devoir de la liste par son indice
     Attention l'indice commence à 0, en négatif part de la fin, on est des devs ou pas ?""")
 async def rm(ctx, indice: int):
 
 
     devoirs = getDevoirs()
-    
+
     try:
         del(devoirs["fields"][indice])
     except IndexError:
@@ -261,7 +261,7 @@ async def rm_error(ctx, error):
         print(datetime.now().time(), error)
 # Gestion des bans de la commande rm
 rm.add_check(bannedList)
-    
+
 # ========================================================
 # Afficher les devoirs à faire
 @bot.command(
@@ -276,17 +276,17 @@ async def devoirs(ctx, parameter: typing.Optional[str] = "-d", *, description: t
         if description != "":
             devoirsPrets = devoirsParMatiere(matiere=description)
             devoirsPrets["title"] = "Les devoirs en " + description
-            
+
             if devoirsPrets["fields"] == []:
                 devoirsPrets["description"] = "Pas de devoirs en cette matière ! YOUPI !!"
         else:
             devoirsPrets = devoirsParMatiere()
-            
+
     elif parameter == "-d":
         devoirsPrets = devoirsParDate()
     else:
         raise commands.BadArgument
-        
+
     miseEnForme = discord.Embed.from_dict(devoirsPrets)
     await ctx.send(embed= miseEnForme)
 # Gestion des erreur de la commande devoirs
@@ -311,7 +311,7 @@ async def my_background_task():
 
     while not bot.is_closed():
         aujourdhui = datetime.now()
-        
+
         # Suppression des devoirs passés
         if (aujourdhui.hour == 0 and aujourdhui.minute == 1):
             devoirs = getDevoirs()
@@ -322,7 +322,7 @@ async def my_background_task():
                     del(devoirs["fields"][cpt])
                     modif = True
                 cpt += 1
-            
+
             if modif:
                 setDevoirs(devoirs)
 
@@ -380,7 +380,6 @@ async def my_background_task():
 
 # ========================================================
 # Commande pour process l'image jointe et en extraire le texte
-from PIL import Image
 import pytesseract
 import re
 import requests
@@ -407,10 +406,11 @@ async def extract(ctx, parameter: typing.Optional[str] = "fra"):
         original = await ctx.fetch_message(id=ctx.message.reference.message_id)
 
         if len(original.attachments) == 0:
-            url = re.search("(?P<url>https?://[^\s]+)", original.content).group("url")
-            if url == "" and not url.endswith([".png", ".jpg", ".jpeg"]):
+            urlRe = re.search("(?P<url>https?://[^\s]+)", original.content)
+            if urlRe == NoneType and not url.endswith([".png", ".jpg", ".jpeg"]):
                 await ctx.send("Pas d'image dans ce message")
                 return
+            url = urlRe.group("url")
             async with ctx.typing():
                 filename = url.split("/").pop()
                 pathToImage = "./images/" + filename
@@ -422,7 +422,7 @@ async def extract(ctx, parameter: typing.Optional[str] = "fra"):
         elif len(ctx.message.attachments) > 1:
             await ctx.send("Trop d'images dans ce message !")
             return
-        
+
         if original.attachments[0].content_type in ["image/jpeg", "image/png"]:
             async with ctx.typing():
                 pathToImage = "./images/" + original.attachments[0].filename
@@ -433,10 +433,11 @@ async def extract(ctx, parameter: typing.Optional[str] = "fra"):
             return
 
     if len(ctx.message.attachments) == 0:
-        url = re.search("(?P<url>https?://[^\s]+)", parameter).group("url")
-        if url == "" and not url.endswith([".png", ".jpg", ".jpeg"]):
+        urlRe = re.search("(?P<url>https?://[^\s]+)", parameter)
+        if urlRe == NoneType and not url.endswith([".png", ".jpg", ".jpeg"]):
             await ctx.send("Pas d'image dans ce message")
             return
+        url = urlRe.group("url")
         async with ctx.typing():
             filename = url.split("/").pop()
             pathToImage = "./images/" + filename
@@ -445,14 +446,14 @@ async def extract(ctx, parameter: typing.Optional[str] = "fra"):
             os.remove(pathToImage)
             await ctx.send("```" + text.strip() + "```")
         return
-        
+
     elif len(ctx.message.attachments) > 1:
         # plusieurs liens
         # re.findall(r'(https?://[^\s]+)', myString)
 
         ctx.send("Bro attend le fait d'envoyer plusieurs photos n'est pas encore implémenté !")
         return
-    
+
     if ctx.message.attachments[0].content_type in ["image/jpeg", "image/png"]:
         async with ctx.typing():
             pathToImage = "./images/" + ctx.message.attachments[0].filename
@@ -461,7 +462,7 @@ async def extract(ctx, parameter: typing.Optional[str] = "fra"):
             os.remove(pathToImage)
             await ctx.send("```" + text.strip() + "```")
         return
-    
+
 # Gestion des erreur de la commande devoirs
 @extract.error
 async def devoirs_error(ctx, error):

@@ -450,7 +450,10 @@ async def extract(ctx, parameter: typing.Optional[str] = "fra", parameter2: typi
         splitedMessage.pop(0)
         lang = "fra"
         if len(splitedMessage) > 1:
-            lang = splitedMessage[splitedMessage.index(url) % 1]
+            if splitedMessage.index(url):
+                lang = splitedMessage[0]
+            else:
+                lang = splitedMessage[1]
 
         if lang not in pytesseract.get_languages(config=''):
             print(splitedMessage)

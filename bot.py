@@ -410,7 +410,7 @@ async def extract(ctx, parameter: typing.Optional[str] = "fra"):
                 return
 
             url = urlRe.group("url")
-            if not url.split(".").pop() in [".png", ".jpg", ".jpeg"] :
+            if not url.split(".").pop() in ["png", "jpg", "jpeg"] :
                 await ctx.send("Le lien ne fait pas référence à une image supporté")
                 return
 
@@ -442,7 +442,7 @@ async def extract(ctx, parameter: typing.Optional[str] = "fra"):
             return
 
         url = urlRe.group("url")
-        if not url.split(".").pop() in [".png", ".jpg", ".jpeg"] :
+        if not url.split(".").pop() in ["png", "jpg", "jpeg"] :
             await ctx.send("Le lien ne fait pas référence à une image supporté")
             return
 

@@ -476,7 +476,7 @@ async def extract(ctx, parameter: typing.Optional[str] = "fra"):
 @extract.error
 async def devoirs_error(ctx, error):
     if isinstance(error, commands.BadArgument) :
-        await ctx.send("Tu as mal écris la commande !\n", error.message)
+        await ctx.send("Tu as mal écris la commande !\n", error)
     if isinstance(error, commands.CommandError) :
         await ctx.send("Ca n'a pas marché du à une erreur interne, veuillez contacter le développeur ...")
         print(datetime.now().time(), error)

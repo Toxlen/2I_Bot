@@ -397,7 +397,7 @@ def dowloadImage(src, dest):
     Permet d'extraire le texte d'une image
     La langue d'interprétation est de base en français mais peut être changé en une autre avec l'argument [LANG].
     Liste des langues dispo : """ + str(pytesseract.get_languages(config='')))
-async def extract(ctx, parameter: typing.Optional[str] = "fra"):
+async def extract(ctx, parameter: typing.Optional[str] = "fra", parameter2: typing.Optional[str] = ""):
     if ctx.message.reference:
         if parameter not in pytesseract.get_languages(config=''):
             raise commands.BadArgument

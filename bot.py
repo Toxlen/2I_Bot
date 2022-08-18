@@ -446,7 +446,8 @@ async def extract(ctx, parameter: typing.Optional[str] = "fra"):
             await ctx.send("Le lien ne fait pas référence à une image supporté")
             return
 
-        splitedMessage = ctx.message.content.split(" ").remove("!extract")
+        splitedMessage = ctx.message.content.split(" ")
+        splitedMessage.pop(0)
         lang = "fra"
         if len(splitedMessage) > 1:
             lang = splitedMessage[splitedMessage.index(url) % 1]

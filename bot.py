@@ -398,10 +398,9 @@ def dowloadImage(src, dest):
     La langue d'interprétation est de base en français mais peut être changé en une autre avec l'argument [LANG].
     Liste des langues dispo : """ + str(pytesseract.get_languages(config='')))
 async def extract(ctx, parameter: typing.Optional[str] = "fra"):
-    if parameter not in pytesseract.get_languages(config=''):
-        raise commands.BadArgument
-
     if ctx.message.reference:
+        if parameter not in pytesseract.get_languages(config=''):
+            raise commands.BadArgument
         original = await ctx.fetch_message(id=ctx.message.reference.message_id)
 
         if len(original.attachments) == 0:
@@ -437,7 +436,7 @@ async def extract(ctx, parameter: typing.Optional[str] = "fra"):
             return
 
     if len(ctx.message.attachments) == 0:
-        urlRe = re.search("(?P<url>https?://[^\s]+)", parameter)
+        urlRe = re.search("(?P<url>https?://[^\s]+)", ctx.message.content)
         if urlRe is None :
             await ctx.send("Pas d'image dans ce message")
             return
@@ -447,14 +446,26 @@ async def extract(ctx, parameter: typing.Optional[str] = "fra"):
             await ctx.send("Le lien ne fait pas référence à une image supporté")
             return
 
+        splitedMessage = ctx.message.content.split(" ").remove("!extract")
+        lang = "fra"
+        if len(splitedMessage) > 1:
+            lang = splitedMessage[splitedMessage.index(url) % 1]
+
+        if lang not in pytesseract.get_languages(config=''):
+            print(splitedMessage)
+            raise commands.BadArgument
+
         async with ctx.typing():
             filename = url.split("/").pop()
             pathToImage = "./images/" + filename
             dowloadImage(url, pathToImage)
-            text = pytesseract.image_to_string(pathToImage, lang=parameter)
+            text = pytesseract.image_to_string(pathToImage, lang=lang)
             os.remove(pathToImage)
             await ctx.send("```" + text.strip() + "```")
         return
+
+    if parameter not in pytesseract.get_languages(config=''):
+        raise commands.BadArgument
 
     elif len(ctx.message.attachments) > 1:
         # plusieurs liens
@@ -476,7 +487,7 @@ async def extract(ctx, parameter: typing.Optional[str] = "fra"):
 @extract.error
 async def devoirs_error(ctx, error):
     if isinstance(error, commands.BadArgument) :
-        await ctx.send("Tu as mal écris la commande !\n" + error)
+        await ctx.send("Tu as mal écris la commande !\n" + str(error))
     if isinstance(error, commands.CommandError) :
         await ctx.send("Ca n'a pas marché du à une erreur interne, veuillez contacter le développeur ...")
         print(datetime.now().time(), error)

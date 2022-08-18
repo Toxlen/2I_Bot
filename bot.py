@@ -406,7 +406,7 @@ async def extract(ctx, parameter: typing.Optional[str] = "fra"):
 
         if len(original.attachments) == 0:
             urlRe = re.search("(?P<url>https?://[^\s]+)", original.content)
-            if urlRe == None and not url.endswith([".png", ".jpg", ".jpeg"]):
+            if urlRe is None and not url.endswith([".png", ".jpg", ".jpeg"]):
                 await ctx.send("Pas d'image dans ce message")
                 return
             url = urlRe.group("url")
@@ -433,7 +433,7 @@ async def extract(ctx, parameter: typing.Optional[str] = "fra"):
 
     if len(ctx.message.attachments) == 0:
         urlRe = re.search("(?P<url>https?://[^\s]+)", parameter)
-        if urlRe == None and not url.endswith([".png", ".jpg", ".jpeg"]):
+        if urlRe is None and not url.endswith([".png", ".jpg", ".jpeg"]):
             await ctx.send("Pas d'image dans ce message")
             return
         url = urlRe.group("url")

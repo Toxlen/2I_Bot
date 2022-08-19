@@ -392,7 +392,7 @@ def dowloadImage(src, dest):
     with open(dest, 'wb') as handler:
         handler.write(img_data)
 
-@bot.command(
+@bot.hybrid_command(
     help="""
     Permet d'extraire le texte d'une image
     La langue d'interprétation est de base en français mais peut être changé en une autre avec l'argument [LANG].

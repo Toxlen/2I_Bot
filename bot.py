@@ -20,7 +20,10 @@ TOKEN = os.environ['DISCORD_TOKEN']
 GUILD = os.environ['DISCORD_GUILD']
 CHANNEL = int(os.environ['DISCORD_CHANNEL'])
 
-bot = commands.Bot(command_prefix='!')
+intents = discord.Intents.default()
+intents.messages = True
+
+bot = commands.Bot(command_prefix='!', intents=intents)
 
 tgGifs = ["https://tenor.com/view/lotr-ring-no-isildur-lord-of-the-rings-gif-5743603", "https://tenor.com/view/no-bugs-bunny-nope-gif-14359850", "https://tenor.com/view/cdi-super-mario-no-turn-around-gif-13643447", "https://tenor.com/view/ohhh-whoah-gif-14206432", "https://tenor.com/view/antm-americas-next-top-model-miss-j-j-alexander-omg-gif-3720930", "https://tenor.com/view/anime-punch-fight-slam-wall-gif-5012110", "https://tenor.com/view/cheh-sheh-orge-sumerien-gif-20238938", "https://tenor.com/view/cat-cats-cat-reaction-cat-react-cat-what-gif-17596807", "https://tenor.com/view/umm-confused-blinking-okay-white-guy-blinking-gif-7513882", "https://tenor.com/view/pedro-monkey-puppet-meme-awkward-gif-15268759", "https://tenor.com/view/vieux-old-man-gif-20005208", "https://tenor.com/view/ferme-ta-gueule-ta-gueule-ferme-la-ftg-tg-gif-5034362", "https://tenor.com/view/my-hero-acadamia-deku-excited-head-desk-wiggling-gif-5497470"]
 

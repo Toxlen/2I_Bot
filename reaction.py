@@ -11,7 +11,10 @@ load_dotenv()
 TOKEN = os.environ['DISCORD_TOKEN'] 
 
 spamJuliette = False
-client = discord.Client()
+intents = discord.Intents.default()
+intents.messages = True
+
+client = discord.Client(intents=intents)
 
 @client.event
 async def on_ready():

@@ -499,7 +499,12 @@ async def devoirs_error(ctx, error):
         await ctx.send("Ca n'a pas marché du à une erreur interne, veuillez contacter le développeur ...")
         print(datetime.now().time(), error)
 
+async def main():
+    async with bot:
+        bot.loop.create_task(my_background_task())
+        await bot.start(TOKEN) 
+
 if __name__ == "__main__":
-    bot.loop.create_task(my_background_task())
     print(datetime.now().time(), "Let's get started !")
-    bot.run(TOKEN)
+    asyncio.run(main())
+

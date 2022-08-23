@@ -304,7 +304,6 @@ async def devoirs_error(ctx, error):
 # Tache de vérification régulière
 @bot.event
 async def my_background_task():
-    await bot.wait_until_ready()
     # guild = discord.utils.get(bot.guilds, name=GUILD)
     # for channel in guild.channels:
     #     if channel.name == "devoirs":

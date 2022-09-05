@@ -22,6 +22,7 @@ CHANNEL = int(os.environ['DISCORD_CHANNEL'])
 
 intents = discord.Intents.default()
 intents.messages = True
+intents.message_content = True
 
 bot = commands.Bot(command_prefix='!', intents=intents)
 
@@ -399,11 +400,11 @@ def dowloadImage(src, dest):
     Permet d'extraire le texte d'une image
     La langue d'interprétation est de base en français mais peut être changé en une autre avec l'argument [LANG].
     Liste des langues dispo : """ + str(pytesseract.get_languages(config='')))
-async def extract(ctx, parameter: typing.Optional[str] = "fra", parameter2: typing.Optional[str] = ""):
+async def extract(ctx, LANG: typing.Optional[str] = "fra", parameter2: typing.Optional[str] = ""):
     if ctx.message.reference:
-        if parameter not in pytesseract.get_languages(config=''):
-            raise commands.BadArgument
-        original = await ctx.fetch_message(id=ctx.message.reference.message_id)
+        if LANG not in pytesseract.get_languages(config=''):
+            raise commands.BadArgument("La langue sélectionné n'existe pas (reference)")
+        original = await ctx.fetch_message(ctx.message.reference.message_id)
 
         if len(original.attachments) == 0:
             urlRe = re.search("(?P<url>https?://[^\s]+)", original.content)
@@ -420,7 +421,7 @@ async def extract(ctx, parameter: typing.Optional[str] = "fra", parameter2: typi
                 filename = url.split("/").pop()
                 pathToImage = "./images/" + filename
                 dowloadImage(url, pathToImage)
-                text = pytesseract.image_to_string(pathToImage, lang=parameter)
+                text = pytesseract.image_to_string(pathToImage, lang=LANG)
                 os.remove(pathToImage)
                 await ctx.send("```" + text.strip() + "```")
                 return
@@ -432,7 +433,7 @@ async def extract(ctx, parameter: typing.Optional[str] = "fra", parameter2: typi
             async with ctx.typing():
                 pathToImage = "./images/" + original.attachments[0].filename
                 await original.attachments[0].save(pathToImage)
-                text = pytesseract.image_to_string(pathToImage, lang=parameter)
+                text = pytesseract.image_to_string(pathToImage, lang=LANG)
                 os.remove(pathToImage)
                 await ctx.send("```" + text.strip() + "```")
                 return
@@ -459,7 +460,7 @@ async def extract(ctx, parameter: typing.Optional[str] = "fra", parameter2: typi
 
         if lang not in pytesseract.get_languages(config=''):
             print(splitedMessage)
-            raise commands.BadArgument
+            raise commands.BadArgument("La langue sélectionné n'existe pas (link)")
 
         async with ctx.typing():
             filename = url.split("/").pop()
@@ -470,8 +471,8 @@ async def extract(ctx, parameter: typing.Optional[str] = "fra", parameter2: typi
             await ctx.send("```" + text.strip() + "```")
             return
 
-    if parameter not in pytesseract.get_languages(config=''):
-        raise commands.BadArgument
+    if LANG not in pytesseract.get_languages(config=''):
+        raise commands.BadArgument("La langue sélectionné n'existe pas (original)")
 
     elif len(ctx.message.attachments) > 1:
         # plusieurs liens
@@ -484,7 +485,7 @@ async def extract(ctx, parameter: typing.Optional[str] = "fra", parameter2: typi
         async with ctx.typing():
             pathToImage = "./images/" + ctx.message.attachments[0].filename
             await ctx.message.attachments[0].save(pathToImage)
-            text = pytesseract.image_to_string(pathToImage, lang=parameter)
+            text = pytesseract.image_to_string(pathToImage, lang=LANG)
             os.remove(pathToImage)
             await ctx.send("```" + text.strip() + "```")
             return
